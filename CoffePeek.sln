@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoffeePeek.Api", "CoffeePeek.Api\CoffeePeek.Api.csproj", "{24BEE6CC-0CA1-429C-95CD-3F63F1259BE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoffeePeek.Contract", "CoffeePeek.Contract\CoffeePeek.Contract.csproj", "{D2F0D897-F81F-4A35-92E8-0A1AD3618D6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoffeePeek.BuildingBlocks", "CoffeePeek.BuildingBlocks\CoffeePeek.BuildingBlocks.csproj", "{19719F2F-1DB7-43B8-9C3A-F2F8AF1F10C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoffeePeek.Data", "CoffeePeek.Data\CoffeePeek.Data.csproj", "{743F8990-9D0F-4895-B530-92B33CD76CB7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{24BEE6CC-0CA1-429C-95CD-3F63F1259BE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24BEE6CC-0CA1-429C-95CD-3F63F1259BE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24BEE6CC-0CA1-429C-95CD-3F63F1259BE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24BEE6CC-0CA1-429C-95CD-3F63F1259BE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2F0D897-F81F-4A35-92E8-0A1AD3618D6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2F0D897-F81F-4A35-92E8-0A1AD3618D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2F0D897-F81F-4A35-92E8-0A1AD3618D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2F0D897-F81F-4A35-92E8-0A1AD3618D6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19719F2F-1DB7-43B8-9C3A-F2F8AF1F10C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19719F2F-1DB7-43B8-9C3A-F2F8AF1F10C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19719F2F-1DB7-43B8-9C3A-F2F8AF1F10C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19719F2F-1DB7-43B8-9C3A-F2F8AF1F10C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{743F8990-9D0F-4895-B530-92B33CD76CB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{743F8990-9D0F-4895-B530-92B33CD76CB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{743F8990-9D0F-4895-B530-92B33CD76CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{743F8990-9D0F-4895-B530-92B33CD76CB7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
