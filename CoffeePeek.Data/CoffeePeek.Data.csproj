@@ -11,10 +11,4 @@
       <Folder Include="Models\" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="Microsoft.EntityFrameworkCore">
-        <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore\8.0.11\lib\net8.0\Microsoft.EntityFrameworkCore.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>
