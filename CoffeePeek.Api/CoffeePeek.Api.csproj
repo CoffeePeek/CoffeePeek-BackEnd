@@ -10,6 +10,7 @@
     <ItemGroup>
         <PackageReference Include="MediatR" Version="12.4.1" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
@@ -27,11 +28,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\CoffeePeek.BuildingBlocks\CoffeePeek.BuildingBlocks.csproj" />
+      <ProjectReference Include="..\CoffeePeek.Contract\CoffeePeek.Contract.csproj" />
       <ProjectReference Include="..\CoffeePeek.Data\CoffeePeek.Data.csproj" />
     </ItemGroup>
 
