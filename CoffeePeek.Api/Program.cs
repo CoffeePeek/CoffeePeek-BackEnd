@@ -1,8 +1,8 @@
 using System.Text;
-using CoffeePeek.Api.Databases;
 using CoffeePeek.BuildingBlocks.AuthOptions;
 using CoffeePeek.BuildingBlocks.EfCore;
 using CoffeePeek.BuildingBlocks.Options;
+using CoffeePeek.Data.Databases;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

@@ -1,7 +1,7 @@
 using CoffeePeek.Data.Models.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace CoffeePeek.Api.Databases;
+namespace CoffeePeek.Data.Databases;
 
 public class CoffeePeekDbContext : DbContext
 {
