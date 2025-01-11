@@ -30,7 +30,7 @@ public class Response
     }
 }
 
-public class Response<T>
+public class Response<T> 
 {
     public bool Success { get; set; }
     
@@ -38,9 +38,10 @@ public class Response<T>
     
     public T Data { get; set; }
 
-    // Пустой конструктор
-    public Response() { }
-
+    public Response()
+    {
+        
+    }
     public Response(bool success, string message, T data)
     {
         Success = success;

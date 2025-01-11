@@ -7,18 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CoffeePeek.Api\CoffeePeek.Api.csproj" />
-      <ProjectReference Include="..\CoffeePeek.Contract\CoffeePeek.Contract.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Reference Include="MediatR">
         <HintPath>..\..\..\.nuget\packages\mediatr\12.4.1\lib\net6.0\MediatR.dll</HintPath>
       </Reference>
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Mapster" Version="7.4.0" />
       <PackageReference Include="MediatR" Version="12.4.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CoffeePeek.Data\CoffeePeek.Data.csproj" />
+      <ProjectReference Include="..\Utilities\Utilities.csproj" />
     </ItemGroup>
 
 </Project>
