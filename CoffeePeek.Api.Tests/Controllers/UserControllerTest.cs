@@ -10,6 +10,7 @@ using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Sentry;
 using Xunit;
 
 namespace CoffeePeek.Api.Tests.Controllers;
@@ -23,7 +24,8 @@ public class UserControllerTest
     public UserControllerTest()
     {
         _mediatorMock = new Mock<IMediator>();
-        _controller = new UserController(_mediatorMock.Object);
+        var hubMock = new Mock<IHub>();
+        _controller = new UserController(_mediatorMock.Object, hubMock.Object);
     }
 
     [Fact]

@@ -8,13 +8,15 @@ namespace CoffeePeek.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IMediator mediator) : Controller
+public class UserController(IMediator mediator, IHub hub) : Controller
 {
     [HttpGet("Users")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<Response<UserDto[]>> GetAllUsers(CancellationToken cancellationToken)
     {
+        hub.GetSpan()?.StartChild("additional-work");
+        
         var request = new GetAllUsersRequest();
         var result = await mediator.Send(request, cancellationToken);
         

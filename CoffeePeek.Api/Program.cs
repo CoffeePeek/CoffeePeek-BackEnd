@@ -3,6 +3,7 @@ using System.Text;
 using CoffeePeek.BuildingBlocks.AuthOptions;
 using CoffeePeek.BuildingBlocks.EfCore;
 using CoffeePeek.BuildingBlocks.Options;
+using CoffeePeek.BuildingBlocks.Sentry;
 using CoffeePeek.BuildingBlocks.Services;
 using CoffeePeek.Data.Databases;
 using CoffeePeek.Data.Mapper;
@@ -13,6 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using Utilities.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.BuildSentry();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
