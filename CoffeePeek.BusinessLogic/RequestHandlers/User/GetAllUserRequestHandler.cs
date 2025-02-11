@@ -31,6 +31,6 @@ public class GetAllUserRequestHandler : IRequestHandler<GetAllUsersRequest, Resp
         
         var result = _mapper.Map<UserDto[]>(users);
         
-        return Response<UserDto[]>.SuccessResponse(result);
+        return Response.SuccessResponse<Response<UserDto[]>>(result);
     }
 }

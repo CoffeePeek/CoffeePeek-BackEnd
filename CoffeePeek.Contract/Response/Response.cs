@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace CoffeePeek.Contract.Response;
 
 public class Response
@@ -18,44 +16,64 @@ public class Response
         Message = message;
         Data = data;
     }
-
-    public static Response SuccessResponse(object data, string message = "Operation successful")
+    
+    public static T SuccessResponse<T>(object data = null, string message = "Operation successful")
+        where T : Response, new()
     {
-        return new Response(true, message, data);
+        return new T
+        {
+            Success = true,
+            Message = message,
+            Data = data
+        };
     }
 
-    public static Response ErrorResponse(string message, object data = default)
+    public static T ErrorResponse<T>(string message, object data = default)
+        where T : Response, new()
     {
-        return new Response(false, message, data);
+        return new T
+        {
+            Success = false,
+            Message = message,
+            Data = data
+        };
     }
 }
 
-public class Response<T> 
+public class Response<TData> : Response
 {
-    public bool Success { get; set; }
-    
-    public string Message { get; set; }
-    
-    public T Data { get; set; }
-
-    public Response()
+    public new TData Data
     {
-        
-    }
-    public Response(bool success, string message, T data)
-    {
-        Success = success;
-        Message = message;
-        Data = data;
+        get => (TData)base.Data;
+        set => base.Data = value;
     }
 
-    public static Response<T> SuccessResponse(T data, string message = "Operation successful")
+    public Response() { }
+
+    public Response(bool success, string message, TData data)
+        : base(success, message, data)
     {
-        return new Response<T>(true, message, data);
     }
 
-    public static Response<T> ErrorResponse(string message, T data = default)
+    public static TResponse SuccessResponse<TResponse>(TData data = default, string message = "Operation successful")
+        where TResponse : Response<TData>, new()
     {
-        return new Response<T>(false, message, data);
+        return new TResponse
+        {
+            Success = true,
+            Message = message,
+            Data = data
+        };
+    }
+
+    public static TResponse ErrorResponse<TResponse>(string message, TData data = default)
+        where TResponse : Response<TData>, new()
+    {
+        return new TResponse
+        {
+            Success = false,
+            Message = message,
+            Data = data
+        };
     }
 }

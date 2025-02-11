@@ -38,7 +38,7 @@ public interface IRepository<T> where T : class
     /// Get first entity async
     /// </summary>
     /// <returns>T entity</returns>
-    Task<T?> FirstOrDefaultAsync(CancellationToken cancellationToken = default);
+    Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get all queries

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace CoffeePeek.Contract.Requests.Auth;
 
-public class GetRefreshTokenRequest : IRequest<GetTokenResponse>
+public class GetRefreshTokenRequest : IRequest<GetRefreshTokenResponse>
 {
     public string RefreshToken { get; }
 

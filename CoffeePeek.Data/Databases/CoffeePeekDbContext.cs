@@ -21,6 +21,8 @@ public class CoffeePeekDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasQueryFilter(author => !author.IsSoftDeleted);
         
+        modelBuilder.Entity<Review>().HasQueryFilter(r => !r.User.IsSoftDeleted);
+        
         base.OnModelCreating(modelBuilder);
     }
 }

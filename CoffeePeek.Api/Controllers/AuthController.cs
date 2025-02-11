@@ -1,6 +1,6 @@
 using CoffeePeek.Contract.Requests.Auth;
-using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.Auth;
+using CoffeePeek.Contract.Response.Login;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,8 +10,8 @@ namespace CoffeePeek.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController(IMediator mediator): Controller
 {
-    [HttpGet("login")]
-    public Task<Response> Login(LoginRequest request)
+    [HttpPost("login")]
+    public Task<LoginResponse> Login([FromBody]LoginRequest request)
     {
         return mediator.Send(request);
     }
@@ -23,7 +23,7 @@ public class AuthController(IMediator mediator): Controller
     }
     
     [HttpGet("refresh")]
-    public Task<GetTokenResponse> RefreshToken(GetTokenRequest request)
+    public Task<GetRefreshTokenResponse> RefreshToken(GetRefreshTokenRequest request)
     {
         return mediator.Send(request);
     }

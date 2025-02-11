@@ -23,13 +23,13 @@ public class DeleteUserRequestHandler : IRequestHandler<DeleteUserRequest, Respo
 
         if (user == null)
         {
-            return Response<bool>.ErrorResponse("User not found");
+            return Response.ErrorResponse<Response<bool>>("User not found");
         }
         
         user.IsSoftDeleted = true;
         
         await _unitOfWork.DbContext.SaveChangesAsync(cancellationToken);
 
-        return Response<bool>.SuccessResponse(true);
+        return Response.SuccessResponse<Response<bool>>(true);
     }
 }

@@ -8,8 +8,5 @@ public static class MapsterConfig
 {
     public static void MapperConfigure()
     {
-        TypeAdapterConfig<User, UserDto>
-           .NewConfig()
-           .Map(d => d.FullName, s => $"{s.FirstName} {s.LastName}");
     }
 }

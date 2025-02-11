@@ -39,9 +39,9 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         return _dbSet.FirstOrDefault();
     }
 
-    public async Task<TEntity?> FirstOrDefaultAsync(CancellationToken cancellationToken = default)
+    public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        return await _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
     public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)

@@ -33,6 +33,6 @@ public class GetUserRequestHandler : IRequestHandler<GetUserRequest, Response<Us
         
         var result = _mapper.Map<UserDto>(user);
         
-        return Response<UserDto>.SuccessResponse(result);
+        return Response.SuccessResponse<Response<UserDto>>(result);
     }
 }
