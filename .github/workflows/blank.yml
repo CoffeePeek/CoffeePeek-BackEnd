@@ -1,0 +1,23 @@
+name: Docker DEV Build
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.Winststreloc }} -p ${{ secrets.Scarlxrd_25 }}
+
+      - name: Build Docker image
+        run: docker build -t winststreloc/coffeepeek-api:dev .
+
+      - name: Push Docker image
+        run: docker push winststreloc/coffeepeek-api:dev
