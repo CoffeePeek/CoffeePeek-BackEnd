@@ -20,6 +20,9 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
+        
+      - name: Install Entity Framework Core tools
+        run: dotnet tool install --global dotnet-ef
 
       - name: Build project
         run: dotnet build --configuration Release
