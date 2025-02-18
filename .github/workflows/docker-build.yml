@@ -1,4 +1,4 @@
-name: Docker DEV Build
+name: Docker Build
 
 on:
   push:
@@ -14,10 +14,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t winststreloc/coffeepeek-api:dev .
+        run: docker build -t your-dockerhub-username/your-image-name:dev .
 
       - name: Push Docker image
-        run: docker push winststreloc/coffeepeek-api:dev
+        run: docker push your-dockerhub-username/your-image-name:dev
