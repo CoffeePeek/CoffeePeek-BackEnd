@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.Winststreloc }} -p ${{ secrets.Scarlxrd_25 }}
+        run: docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Build Docker image
         run: docker build -t winststreloc/coffeepeek-api:dev .
