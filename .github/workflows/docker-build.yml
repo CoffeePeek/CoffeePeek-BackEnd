@@ -20,4 +20,4 @@ jobs:
         run: docker build -t winststreloc/coffeepeek.api:dev .
 
       - name: Push Docker image
-        run: docker push winststreloc/coffeepeek.api:dev:dev
+        run: docker push winststreloc/coffeepeek.api:dev
