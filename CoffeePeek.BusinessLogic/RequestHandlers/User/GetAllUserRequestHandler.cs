@@ -10,26 +10,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoffeePeek.BusinessLogic.RequestHandlers;
 
-public class GetAllUserRequestHandler : IRequestHandler<GetAllUsersRequest, Response<UserDto[]>>
+public class GetAllUserRequestHandler(IUnitOfWork<CoffeePeekDbContext> unitOfWork, IMapper mapper)
+    : IRequestHandler<GetAllUsersRequest, Response<UserDto[]>>
 {
-    private readonly IUnitOfWork<CoffeePeekDbContext> _unitOfWork;
-    private readonly IMapper _mapper;
-
-    public GetAllUserRequestHandler(IUnitOfWork<CoffeePeekDbContext> unitOfWork, IMapper mapper)
-    {
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-    }
-
     public async Task<Response<UserDto[]>> Handle(GetAllUsersRequest request, CancellationToken cancellationToken)
     {
-        var repository = _unitOfWork.GetRepository<User>();
+        var repository = unitOfWork.GetRepository<User>();
 
         var usersQuery = repository.GetAll();
         
         var users = await usersQuery.ToListAsync(cancellationToken);
         
-        var result = _mapper.Map<UserDto[]>(users);
+        var result = mapper.Map<UserDto[]>(users);
         
         return Response.SuccessResponse<Response<UserDto[]>>(result);
     }

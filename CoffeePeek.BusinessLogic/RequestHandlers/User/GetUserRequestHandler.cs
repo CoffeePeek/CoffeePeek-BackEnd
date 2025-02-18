@@ -1,3 +1,4 @@
+using CoffeePeek.BusinessLogic.Exceptions;
 using CoffeePeek.Contract.Dtos.User;
 using CoffeePeek.Contract.Requests.User;
 using CoffeePeek.Contract.Response;
@@ -6,7 +7,6 @@ using CoffeePeek.Data.Databases;
 using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Utilities.Exceptions;
 
 namespace CoffeePeek.BusinessLogic.RequestHandlers;
 

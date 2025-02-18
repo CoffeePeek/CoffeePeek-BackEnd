@@ -1,21 +1,16 @@
-﻿namespace CoffeePeek.Data.Models.Users;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User : BaseModel
+namespace CoffeePeek.Data.Models.Users;
+
+public class User : IdentityUser<int>
 {
     public User()
     {
         Reviews = new HashSet<Review.Review>();
     }
 
-    public string UserName { get; set; }
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-    public string Email { get; set; }
-    /// <summary>
-    /// Hash Password
-    /// </summary>
-    public string Password { get; set; }
-    
+    public DateTime CreatedAt { get; set; }
+    public string? FullName { get; set; }
     public bool IsSoftDeleted { get; set; }
     
     public ICollection<Review.Review> Reviews { get; set; }

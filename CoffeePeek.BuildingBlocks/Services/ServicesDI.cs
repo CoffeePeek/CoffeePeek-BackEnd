@@ -9,7 +9,7 @@ public static class ServicesDI
 {
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
-        services.AddScoped<IUserPasswordService, UserPasswordService>();
+        services.AddScoped<IHashingService, HashingService>();
 
         #region Validation
 

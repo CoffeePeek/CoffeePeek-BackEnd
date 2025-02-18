@@ -2,7 +2,7 @@
 
 namespace CoffeePeek.Data;
 
-public interface IRepository<T> where T : class
+public interface IRepository<TEntity> where TEntity : class
 {
     /// <summary>
     /// Persists all updates to the data source
@@ -19,96 +19,98 @@ public interface IRepository<T> where T : class
     /// </summary>
     /// <param name="predicate">LINQ predicate</param>
     /// <returns>T entity</returns>
-    T First(Expression<Func<T, bool>> predicate);
+    TEntity First(Expression<Func<TEntity, bool>> predicate);
 
     /// <summary>
     /// Get first entity by predicate 
     /// </summary>
     /// <param name="predicate"></param>
     /// <returns>T entity</returns>
-    T? FirstOrDefault(Expression<Func<T, bool>> predicate);
+    TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate);
 
     /// <summary>
     /// Get first entity
     /// </summary>
     /// <returns>T entity</returns>
-    T? FirstOrDefault();
+    TEntity? FirstOrDefault();
 
     /// <summary>
     /// Get first entity async
     /// </summary>
     /// <returns>T entity</returns>
-    Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+    Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get all queries
     /// </summary>
     /// <returns>IQueryable queries</returns>
-    IQueryable<T> GetAll();
+    IQueryable<TEntity> GetAll();
 
     /// <summary>
     /// Find queries by predicate (where logic)
     /// </summary>
     /// <param name="predicate">Search predicate (LINQ)</param>
     /// <returns>IQueryable queries</returns>
-    IQueryable<T> FindBy(Expression<Func<T, bool>> predicate);
+    IQueryable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate);
 
     /// <summary>
     /// Find queries by predicate
     /// </summary>
     /// <param name="predicate">Search predicate (LINQ)</param>
     /// <returns>IQueryable queries</returns>
-    bool Any(Expression<Func<T, bool>> predicate);
+    bool Any(Expression<Func<TEntity, bool>> predicate);
+
+    Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate);
 
     /// <summary>
     /// Find entity by keys
     /// </summary>
     /// <param name="keys">Search key</param>
     /// <returns>T entity</returns>
-    T Find(params object[] keys);
+    TEntity Find(params object[] keys);
 
     /// <summary>
     /// Add new entity
     /// </summary>
     /// <param name="entity">Entity object</param>
-    void Add(T entity);
+    void Add(TEntity entity);
 
     /// <summary>
     /// Add new entities
     /// </summary>
     /// <param name="entities">Entity collection</param>
-    void AddRange(IEnumerable<T> entities);
+    void AddRange(IEnumerable<TEntity> entities);
 
     /// <summary>
     /// Remove entity from database
     /// </summary>
     /// <param name="entity">Entity object</param>
-    void Delete(T entity);
+    void Delete(TEntity entity);
 
     /// <summary>
     /// Remove entities from database
     /// </summary>
     /// <param name="entity">Entity object</param>
-    void DeleteRange(IEnumerable<T> entity);
+    void DeleteRange(IEnumerable<TEntity> entity);
 
     /// <summary>
     /// Update entity
     /// </summary>
     /// <param name="entity">Entity object</param>
-    void Update(T entity);
+    void Update(TEntity entity);
 
     /// <summary>
     /// Order by
     /// </summary>
-    IOrderedQueryable<T> OrderBy<K>(Expression<Func<T, K>> predicate);
+    IOrderedQueryable<TEntity> OrderBy<K>(Expression<Func<TEntity, K>> predicate);
 
     /// <summary>
     /// Order by
     /// </summary>
-    IQueryable<IGrouping<K, T>> GroupBy<K>(Expression<Func<T, K>> predicate);
+    IQueryable<IGrouping<K, TEntity>> GroupBy<K>(Expression<Func<TEntity, K>> predicate);
 
     /// <summary>
     /// Remove range of given entities
     /// </summary>
-    void RemoveRange(IEnumerable<T> entities);
+    void RemoveRange(IEnumerable<TEntity> entities);
 }

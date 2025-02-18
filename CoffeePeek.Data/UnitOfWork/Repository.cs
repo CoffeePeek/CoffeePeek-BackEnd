@@ -64,6 +64,11 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         return _dbSet.Any(predicate);
     }
 
+    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await _dbSet.AnyAsync(predicate);
+    }
+    
     public TEntity Find(params object[] keys)
     {
         return _dbSet.Find(keys)!;

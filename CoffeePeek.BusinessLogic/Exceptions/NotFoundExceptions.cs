@@ -1,4 +1,4 @@
-namespace Utilities.Exceptions;
+namespace CoffeePeek.BusinessLogic.Exceptions;
 
 public class NotFoundException : Exception
 {

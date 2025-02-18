@@ -2,13 +2,13 @@ using System.Security.Cryptography;
 
 namespace CoffeePeek.BusinessLogic.Services;
 
-public class UserPasswordService : IUserPasswordService
+public class HashingService : IHashingService
 {
     private const int SaltSize = 16;
     private const int KeySize = 32;
     private const int Iterations = 10000;
 
-    public string HashPassword(string password)
+    public string HashString(string password)
     {
         if (string.IsNullOrWhiteSpace(password))
             throw new ArgumentException("Password cannot be null or empty.", nameof(password));
@@ -32,7 +32,7 @@ public class UserPasswordService : IUserPasswordService
         return Convert.ToBase64String(hashBytes);
     }
 
-    public bool VerifyPassword(string password, string hashedPassword)
+    public bool VerifyHashedStrings(string password, string hashedPassword)
     {
         if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(hashedPassword))
             return false;

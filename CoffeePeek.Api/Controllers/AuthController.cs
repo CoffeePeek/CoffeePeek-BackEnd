@@ -1,4 +1,5 @@
 using CoffeePeek.Contract.Requests.Auth;
+using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.Auth;
 using CoffeePeek.Contract.Response.Login;
 using MediatR;
@@ -11,20 +12,28 @@ namespace CoffeePeek.Api.Controllers;
 public class AuthController(IMediator mediator): Controller
 {
     [HttpPost("login")]
-    public Task<LoginResponse> Login([FromBody]LoginRequest request)
+    public Task<Response<LoginResponse>> Login([FromBody] LoginRequest request)
     {
         return mediator.Send(request);
     }
 
-    [HttpGet("token")]
-    public Task<GetTokenResponse> Token(GetTokenRequest request)
+    [HttpPost("register")]
+    public Task<Response<RegisterUserResponse>> Register([FromBody] RegisterUserRequest request)
     {
         return mediator.Send(request);
     }
     
-    [HttpGet("refresh")]
-    public Task<GetRefreshTokenResponse> RefreshToken(GetRefreshTokenRequest request)
+    [HttpPost("register-google")]
+    public Task<string> Register([FromBody] RegisterUserFromGoogleRequest request)
     {
+        return Task.FromResult("not working");
+        //return mediator.Send(request);
+    }
+    
+    [HttpGet("refresh")]
+    public Task<Response<GetRefreshTokenResponse>> RefreshToken([FromQuery]string refreshToken)
+    {
+        var request =  new GetRefreshTokenRequest(refreshToken);
         return mediator.Send(request);
     }
 }

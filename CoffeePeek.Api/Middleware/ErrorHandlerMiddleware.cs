@@ -1,8 +1,7 @@
+using CoffeePeek.BusinessLogic.Exceptions;
 using CoffeePeek.Contract.Response;
-using Microsoft.AspNetCore.Http;
-using Utilities.Exceptions;
 
-namespace Utilities.Middleware;
+namespace CoffeePeek.Api.Middleware;
 
 public class ErrorHandlerMiddleware
 {
