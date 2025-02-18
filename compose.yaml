@@ -1,0 +1,6 @@
+﻿services:
+  coffeepeek.api:
+    image: coffeepeek.api
+    build:
+      context: .
+      dockerfile: CoffeePeek.Api/Dockerfile
