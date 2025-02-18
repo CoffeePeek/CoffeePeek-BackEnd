@@ -32,6 +32,7 @@ public static class UnitOfWorkExtensions
         services.AddUnitOfWork<CoffeePeekDbContext>();
 
         services.AddCustomRepository<User, UserRepository>();
+        services.AddCustomRepository<RefreshToken, RefreshTokenRepository>();
         
         return services;
     }

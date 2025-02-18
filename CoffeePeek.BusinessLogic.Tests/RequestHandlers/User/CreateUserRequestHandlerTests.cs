@@ -22,14 +22,14 @@ public class CreateUserRequestHandlerTests
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<IValidationStrategy<UserDto>> _validationStrategyMock;
     private readonly CreateUserRequestHandler _handler;
-    private readonly Mock<IUserPasswordService> _passwordServiceMock;
+    private readonly Mock<IHashingService> _passwordServiceMock;
 
     public CreateUserRequestHandlerTests()
     {
         _unitOfWorkMock = new Mock<IUnitOfWork<CoffeePeekDbContext>>();
         _mapperMock = new Mock<IMapper>();
         _validationStrategyMock = new Mock<IValidationStrategy<UserDto>>();
-        _passwordServiceMock = new Mock<IUserPasswordService>();
+        _passwordServiceMock = new Mock<IHashingService>();
 
         _handler = new CreateUserRequestHandler(
             _unitOfWorkMock.Object,
@@ -44,7 +44,7 @@ public class CreateUserRequestHandlerTests
     {
         // Arrange
         var password = "Password123";
-        var hashPassword = _passwordServiceMock.Object.HashPassword(password);
+        var hashPassword = _passwordServiceMock.Object.HashString(password);
         var cancellationToken = CancellationToken.None;
     
         var request = new CreateUserRequest
@@ -84,7 +84,7 @@ public class CreateUserRequestHandlerTests
     {
         // Arrange
         var password = "Password123";
-        var hashPassword = _passwordServiceMock.Object.HashPassword(password);
+        var hashPassword = _passwordServiceMock.Object.HashString(password);
         
         var request = new CreateUserRequest
         {
@@ -115,7 +115,7 @@ public class CreateUserRequestHandlerTests
     {
         // Arrange
         var password = "Password123";
-        var hashPassword = _passwordServiceMock.Object.HashPassword(password);
+        var hashPassword = _passwordServiceMock.Object.HashString(password);
 
         var request = new CreateUserRequest
         {

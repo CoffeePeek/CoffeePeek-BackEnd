@@ -1,9 +1,13 @@
 namespace CoffeePeek.Contract.Response.Auth;
 
-public class GetRefreshTokenResponse : GetTokenResponse
+public class GetRefreshTokenResponse
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public GetRefreshTokenResponse(string accessToken, string refreshToken) : base(accessToken, refreshToken)
+    public GetRefreshTokenResponse(string accessToken, string refreshToken)
     {
+        AccessToken = accessToken;
+        RefreshToken = refreshToken;
     }
+
+    public string AccessToken { get; }
+    public string RefreshToken { get; }
 }
