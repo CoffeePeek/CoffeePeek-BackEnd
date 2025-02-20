@@ -11,6 +11,12 @@ namespace CoffeePeek.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController(IMediator mediator): Controller
 {
+    [HttpPost("check-exists")]
+    public Task<Response> CheckUserExistsByEmail([FromQuery] CheckUserExistsByEmailRequest request)
+    {
+        return mediator.Send(request);
+    }
+    
     [HttpPost("login")]
     public Task<Response<LoginResponse>> Login([FromBody] LoginRequest request)
     {
@@ -31,9 +37,8 @@ public class AuthController(IMediator mediator): Controller
     }
     
     [HttpGet("refresh")]
-    public Task<Response<GetRefreshTokenResponse>> RefreshToken([FromQuery]string refreshToken)
+    public Task<Response<GetRefreshTokenResponse>> RefreshToken([FromQuery]GetRefreshTokenRequest request)
     {
-        var request =  new GetRefreshTokenRequest(refreshToken);
         return mediator.Send(request);
     }
 }
