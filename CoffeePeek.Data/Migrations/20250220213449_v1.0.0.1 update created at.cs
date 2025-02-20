@@ -5,7 +5,7 @@
 namespace CoffeePeek.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class v1007prefinalrefreshToken : Migration
+    public partial class v1001updatecreatedat : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

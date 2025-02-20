@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CoffeePeek.Data.Migrations
 {
     [DbContext(typeof(CoffeePeekDbContext))]
-    [Migration("20250218222842_v.1.0.0.8 add initial coffe entity")]
-    partial class v1008addinitialcoffeentity
+    [Migration("20250220213449_v1.0.0.1 update created at")]
+    partial class v1001updatecreatedat
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,9 @@ namespace CoffeePeek.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<decimal?>("Latitude")
                         .HasColumnType("numeric");
@@ -76,7 +78,9 @@ namespace CoffeePeek.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<decimal?>("Latitude")
                         .HasColumnType("numeric");
@@ -104,7 +108,9 @@ namespace CoffeePeek.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -127,7 +133,9 @@ namespace CoffeePeek.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -149,7 +157,9 @@ namespace CoffeePeek.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
@@ -172,7 +182,9 @@ namespace CoffeePeek.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Header")
                         .IsRequired()
@@ -233,17 +245,18 @@ namespace CoffeePeek.Data.Migrations
                     b.Property<TimeSpan?>("ClosingTime")
                         .HasColumnType("interval");
 
-                    b.Property<int>("CoffeeShopId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("DayOfWeek")
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsOpen24Hours")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<TimeSpan?>("OpeningTime")
                         .HasColumnType("interval");
@@ -267,7 +280,9 @@ namespace CoffeePeek.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateTime>("ExceptionEndDate")
                         .HasColumnType("timestamp with time zone");
@@ -312,7 +327,9 @@ namespace CoffeePeek.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -340,7 +357,9 @@ namespace CoffeePeek.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("InstagramLink")
                         .IsRequired()
@@ -359,6 +378,35 @@ namespace CoffeePeek.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("ShopContacts");
+                });
+
+            modelBuilder.Entity("CoffeePeek.Data.Models.Shop.ShopPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("ShopId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShopId");
+
+                    b.HasIndex("Url");
+
+                    b.ToTable("ShopPhoto");
                 });
 
             modelBuilder.Entity("CoffeePeek.Data.Models.Users.IdentityRoleEntity", b =>
@@ -399,6 +447,7 @@ namespace CoffeePeek.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("ExpiryDate")
@@ -724,6 +773,17 @@ namespace CoffeePeek.Data.Migrations
                     b.Navigation("Shop");
                 });
 
+            modelBuilder.Entity("CoffeePeek.Data.Models.Shop.ShopPhoto", b =>
+                {
+                    b.HasOne("CoffeePeek.Data.Models.Shop.Shop", "Shop")
+                        .WithMany("ShopPhotos")
+                        .HasForeignKey("ShopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shop");
+                });
+
             modelBuilder.Entity("CoffeePeek.Data.Models.Users.RefreshToken", b =>
                 {
                     b.HasOne("CoffeePeek.Data.Models.Users.User", "User")
@@ -801,6 +861,8 @@ namespace CoffeePeek.Data.Migrations
 
                     b.Navigation("ShopContacts")
                         .IsRequired();
+
+                    b.Navigation("ShopPhotos");
                 });
 
             modelBuilder.Entity("CoffeePeek.Data.Models.Users.User", b =>
