@@ -40,6 +40,7 @@ public class UserController(IMediator mediator, IHub hub) : Controller
     }*/
 
     [HttpDelete("{id:int}")]
+    [Authorize]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public Task<Response<bool>> DeleteUser(int id, CancellationToken cancellationToken)
