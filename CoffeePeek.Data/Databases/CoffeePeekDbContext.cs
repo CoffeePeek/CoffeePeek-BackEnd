@@ -1,3 +1,4 @@
+using CoffeePeek.Data.Extensions;
 using CoffeePeek.Data.Models.Address;
 using CoffeePeek.Data.Models.Review;
 using CoffeePeek.Data.Models.Schedules;
@@ -36,8 +37,10 @@ public class CoffeePeekDbContext : IdentityDbContext<User, IdentityRoleEntity, i
         modelBuilder.Entity<User>()
             .HasQueryFilter(author => !author.IsSoftDeleted);
         
-        modelBuilder.Entity<Review>().HasQueryFilter(r => !r.User.IsSoftDeleted);
-        
+        modelBuilder.AddressConfigure();
+        modelBuilder.ReviewConfigure();
+        modelBuilder.ScheduleConfigure();
+        modelBuilder.ShopConfigure();
         
         base.OnModelCreating(modelBuilder);
     }

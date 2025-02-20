@@ -2,7 +2,7 @@ namespace CoffeePeek.Data.Models.Schedules;
 
 public class Schedule : BaseModel
 {
-    public int CoffeeShopId { get; set; }
+    public int ShopId { get; set; }
 
     public DayOfWeek DayOfWeek { get; set; }
     public TimeSpan? OpeningTime { get; set; }

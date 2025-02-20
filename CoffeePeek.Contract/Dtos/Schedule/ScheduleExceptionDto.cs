@@ -4,7 +4,6 @@ namespace CoffeePeek.Contract.Dtos.Schedule;
 
 public class ScheduleExceptionDto
 {
-    public int ScheduleExceptionId { get; set; }
     public DateTime ExceptionStartDate { get; set; }
     public DateTime ExceptionEndDate { get; set; }
     public ScheduleExceptionType OverrideScheduleType { get; set; }

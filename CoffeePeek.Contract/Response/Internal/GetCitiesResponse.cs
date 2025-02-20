@@ -2,12 +2,7 @@ using CoffeePeek.Contract.Dtos.Internal;
 
 namespace CoffeePeek.Contract.Response.Internal;
 
-public class GetCitiesResponse
+public class GetCitiesResponse(CityDto[] cities)
 {
-    public GetCitiesResponse(CityDto[] city)
-    {
-        City = city;
-    }
-
-    public CityDto[] City { get; set; }
+    public CityDto[] Cities { get; set; } = cities;
 }

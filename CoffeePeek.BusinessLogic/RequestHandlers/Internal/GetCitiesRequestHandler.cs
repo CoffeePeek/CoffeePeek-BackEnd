@@ -27,6 +27,8 @@ public class GetCitiesRequestHandler : IRequestHandler<GetCitiesRequest, Respons
         
         var cityDtos = _mapper.Map<CityDto[]>(cities);
 
-        return Response.SuccessResponse<Response<GetCitiesResponse>>(cityDtos);
+        var response = new GetCitiesResponse(cityDtos);
+        
+        return Response.SuccessResponse<Response<GetCitiesResponse>>(response);
     }
 }

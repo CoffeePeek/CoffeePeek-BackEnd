@@ -37,8 +37,12 @@ public class GetCoffeeShopsRequestHandler : IRequestHandler<GetCoffeeShopsReques
 
         //TODO add sorting
         var coffeeShops = await _unitOfWork.Shops
+            .AsNoTracking().AsSplitQuery()
             .Include(cs => cs.Address).ThenInclude(a => a.City)
             .Include(cs => cs.Address).ThenInclude(a => a.Street)
+            .Include(x => x.Schedules)
+            .Include(x => x.ScheduleExceptions)
+            .Include(x => x.ShopPhotos)
             .OrderBy(cs => cs.Name) 
             .Skip((pageNumber - 1) * request.PageSize)
             .Take(request.PageSize)

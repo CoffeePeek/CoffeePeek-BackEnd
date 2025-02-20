@@ -10,7 +10,7 @@ namespace CoffeePeek.Api.Controllers;
 [Route("api/[controller]")]
 public class InternalController(IMediator mediator) : Controller
 {
-    [HttpGet]
+    [HttpGet("cities")]
     public Task<Response<GetCitiesResponse>> GetCities()
     {
         var request = new GetCitiesRequest();
