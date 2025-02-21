@@ -35,7 +35,15 @@ public class CoffeePeekDbContext : IdentityDbContext<User, IdentityRoleEntity, i
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        
+        modelBuilder.Entity<User>()
             .HasQueryFilter(author => !author.IsSoftDeleted);
+
+        modelBuilder.Entity<RefreshToken>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
         
         modelBuilder.AddressConfigure();
         modelBuilder.ReviewConfigure();
