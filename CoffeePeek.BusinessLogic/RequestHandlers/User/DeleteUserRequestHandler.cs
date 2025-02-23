@@ -7,18 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoffeePeek.BusinessLogic.RequestHandlers;
 
-public class DeleteUserRequestHandler : IRequestHandler<DeleteUserRequest, Response<bool>>
+public class DeleteUserRequestHandler(IUnitOfWork<CoffeePeekDbContext> unitOfWork)
+    : IRequestHandler<DeleteUserRequest, Response<bool>>
 {
-    private readonly IUnitOfWork<CoffeePeekDbContext> _unitOfWork;
-
-    public DeleteUserRequestHandler(IUnitOfWork<CoffeePeekDbContext> unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Response<bool>> Handle(DeleteUserRequest request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.DbContext.Users
+        var user = await unitOfWork.DbContext.Users
             .FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
 
         if (user == null)
@@ -28,7 +22,7 @@ public class DeleteUserRequestHandler : IRequestHandler<DeleteUserRequest, Respo
         
         user.IsSoftDeleted = true;
         
-        await _unitOfWork.DbContext.SaveChangesAsync(cancellationToken);
+        await unitOfWork.DbContext.SaveChangesAsync(cancellationToken);
 
         return Response.SuccessResponse<Response<bool>>(true);
     }

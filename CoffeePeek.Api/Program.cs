@@ -4,13 +4,14 @@ using CoffeePeek.BuildingBlocks.AuthOptions;
 using CoffeePeek.BuildingBlocks.EfCore;
 using CoffeePeek.BuildingBlocks.Extensions;
 using CoffeePeek.BuildingBlocks.Options;
+using CoffeePeek.BuildingBlocks.RedisOptions;
 using CoffeePeek.BuildingBlocks.Sentry;
-using CoffeePeek.BuildingBlocks.Services;
+using CoffeePeek.BusinessLogic.Configuration;
 using CoffeePeek.Data.Databases;
 using CoffeePeek.Data.Mapper;
+using CoffeePeek.Infrastructure.Configuration;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,14 +27,13 @@ builder.Services.AddMediatR(cfg =>
 });
 
 var dbOptions = builder.Services.AddValidateOptions<PostgresCpOptions>();
-
 builder.Services
     .AddDbContext<CoffeePeekDbContext>(opt =>
     {
         opt.UseNpgsql(dbOptions.ConnectionString, b => b.MigrationsAssembly("CoffeePeek.Data"));
     })
     .ConfigureDbRepositories();
-
+builder.Services.RedisConfigurationOptions();
 builder.Services.AddMapster();
 MapsterConfig.MapperConfigure();
 
@@ -41,7 +41,8 @@ MapsterConfig.MapperConfigure();
 builder.Services
     .AddSwagger()
     .AddBearerAuthentication()
-    .AddBusinessServices()
+    .AddValidators()
+    .RegisterInfrastructure()
     .AddControllers();
 
 //builder.Services.AddHostedService<RoleInitializer>();

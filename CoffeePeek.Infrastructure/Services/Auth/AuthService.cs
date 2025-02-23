@@ -2,26 +2,26 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using CoffeePeek.Contract.Options;
 using CoffeePeek.Data.Models.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using AuthenticationOptions = CoffeePeek.BuildingBlocks.AuthOptions.AuthenticationOptions;
 
-namespace CoffeePeek.BusinessLogic.Services.Auth;
+namespace CoffeePeek.Infrastructure.Services.Auth;
 
 public class AuthService(
     IOptions<AuthenticationOptions> authenticationOptions,
     UserManager<User> userManager) 
     : IAuthService
 {
-    private readonly AuthenticationOptions _authOptions = authenticationOptions.Value;
+    public AuthenticationOptions AuthOptions { get; } = authenticationOptions.Value;
 
     public async Task<string> GenerateToken(User user)
     {
         var handler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_authOptions.JwtSecretKey);
+        var key = Encoding.ASCII.GetBytes(AuthOptions.JwtSecretKey);
         var credentials = new SigningCredentials(
             new SymmetricSecurityKey(key),
             SecurityAlgorithms.HmacSha256Signature);
@@ -38,7 +38,7 @@ public class AuthService(
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = GenerateClaims(user, userRoles),
-            Expires = DateTime.UtcNow.AddMinutes(_authOptions.ExpireIntervalMinutes),
+            Expires = DateTime.UtcNow.AddMinutes(AuthOptions.ExpireIntervalMinutes),
             SigningCredentials = credentials,
             Claims = claims,
             Audience = "test",
@@ -56,14 +56,14 @@ public class AuthService(
         var refreshTokenData = new
         {
             UserId = userId,
-            Expiry = DateTime.UtcNow.AddDays(_authOptions.ExpireRefreshIntervalDays)
+            Expiry = DateTime.UtcNow.AddDays(AuthOptions.ExpireRefreshIntervalDays)
         };
 
         var jsonData = JsonConvert.SerializeObject(refreshTokenData);
 
         using var aesAlg = Aes.Create();
 
-        var keyBytes = Encoding.UTF8.GetBytes(_authOptions.JwtSecretKey);
+        var keyBytes = Encoding.UTF8.GetBytes(AuthOptions.JwtSecretKey);
         using var sha256 = SHA256.Create();
         var hashedKey = sha256.ComputeHash(keyBytes);
 
@@ -98,7 +98,7 @@ public class AuthService(
 
             using var aesAlg = Aes.Create();
 
-            var keyBytes = Encoding.UTF8.GetBytes(_authOptions.JwtSecretKey);
+            var keyBytes = Encoding.UTF8.GetBytes(AuthOptions.JwtSecretKey);
             using var sha256 = SHA256.Create();
             var hashedKey = sha256.ComputeHash(keyBytes);
 

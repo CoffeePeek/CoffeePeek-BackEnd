@@ -1,11 +1,12 @@
 using CoffeePeek.Data;
 using CoffeePeek.Data.Databases;
+using CoffeePeek.Data.Models.Address;
 using CoffeePeek.Data.Models.Users;
 using CoffeePeek.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CoffeePeek.BuildingBlocks.EfCore;
+namespace CoffeePeek.Infrastructure.Configuration;
 
 public static class UnitOfWorkExtensions
 {
@@ -33,6 +34,7 @@ public static class UnitOfWorkExtensions
 
         services.AddCustomRepository<User, UserRepository>();
         services.AddCustomRepository<RefreshToken, RefreshTokenRepository>();
+        services.AddCustomRepository<City, CityRepository>();
         
         return services;
     }

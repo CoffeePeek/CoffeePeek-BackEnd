@@ -1,4 +1,4 @@
-using CoffeePeek.Contract.Enums;
+using CoffeePeek.Data.Enums;
 
 namespace CoffeePeek.Contract.Dtos.Schedule;
 

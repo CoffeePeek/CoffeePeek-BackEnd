@@ -1,4 +1,4 @@
-using CoffeePeek.Contract.Enums;
+using CoffeePeek.Data.Enums;
 using CoffeePeek.Data.Models.Schedules;
 
 namespace CoffeePeek.Data.Models.Shop;
