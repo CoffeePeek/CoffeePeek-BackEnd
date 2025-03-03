@@ -1,4 +1,4 @@
-namespace CoffeePeek.Contract.Constants;
+namespace CoffeePeek.BuildingBlocks.AuthOptions;
 
 public class RoleConsts
 {

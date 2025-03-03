@@ -1,4 +1,4 @@
-namespace CoffeePeek.Contract.Enums;
+namespace CoffeePeek.Data.Enums;
 
 public enum ScheduleExceptionType
 {

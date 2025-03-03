@@ -22,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CoffeePeek.BuildingBlocks\CoffeePeek.BuildingBlocks.csproj" />
       <ProjectReference Include="..\CoffeePeek.BusinessLogic\CoffeePeek.BusinessLogic.csproj" />
     </ItemGroup>
 

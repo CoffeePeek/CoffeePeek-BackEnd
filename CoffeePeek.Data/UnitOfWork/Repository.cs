@@ -53,6 +53,11 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         return _dbSet.AsNoTracking();
     }
+    
+    public async Task<List<TEntity>> GetAllAsync()
+    {
+        return await _dbSet.AsNoTracking().ToListAsync();
+    }
 
     public IQueryable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate)
     {

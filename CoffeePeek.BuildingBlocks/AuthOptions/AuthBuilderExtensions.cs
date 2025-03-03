@@ -1,8 +1,5 @@
 using System.Text;
 using CoffeePeek.BuildingBlocks.Options;
-using CoffeePeek.BusinessLogic.Services.Auth;
-using CoffeePeek.Contract.Constants;
-using CoffeePeek.Contract.Options;
 using CoffeePeek.Data.Databases;
 using CoffeePeek.Data.Models.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -51,8 +48,7 @@ public static class AuthBuilderExtensions
         });
         
         AddUserIdentity(services);
-
-        services.AddTransient<IAuthService, AuthService>();
+        
         return services;
     }
 
