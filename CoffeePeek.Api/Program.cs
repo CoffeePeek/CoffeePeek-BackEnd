@@ -10,7 +10,6 @@ using CoffeePeek.Data.Databases;
 using CoffeePeek.Data.Mapper;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +48,8 @@ builder.Services
 var app = builder.Build();
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
+app.UseMiddleware<UserTokenMiddleware>();
+
 
 app.UseAuthentication();
 app.UseAuthorization();

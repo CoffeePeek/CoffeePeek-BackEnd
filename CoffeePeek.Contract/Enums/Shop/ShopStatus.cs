@@ -1,4 +1,4 @@
-namespace CoffeePeek.Contract.Enums;
+namespace CoffeePeek.Contract.Enums.Shop;
 
 public enum ShopStatus
 {

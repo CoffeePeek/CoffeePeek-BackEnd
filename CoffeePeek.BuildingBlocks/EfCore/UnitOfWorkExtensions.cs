@@ -1,7 +1,9 @@
 using CoffeePeek.Data;
 using CoffeePeek.Data.Databases;
+using CoffeePeek.Data.Models.Shop;
 using CoffeePeek.Data.Models.Users;
 using CoffeePeek.Data.Repositories;
+using CoffeePeek.Data.Repositories.InReview;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -30,9 +32,12 @@ public static class UnitOfWorkExtensions
     public static IServiceCollection ConfigureDbRepositories(this IServiceCollection services)
     {
         services.AddUnitOfWork<CoffeePeekDbContext>();
+        services.AddUnitOfWork<ReviewCoffeePeekDbContext>();
 
         services.AddCustomRepository<User, UserRepository>();
         services.AddCustomRepository<RefreshToken, RefreshTokenRepository>();
+        
+        services.AddCustomRepository<ReviewShop, ReviewShopsRepository>();
         
         return services;
     }
