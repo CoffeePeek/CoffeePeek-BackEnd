@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoffeePeek.Data.Databases;
 
-public class ReviewCoffeePeekDbContext : DbContext
+public class ReviewCoffeePeekDbContext(DbContextOptions<ReviewCoffeePeekDbContext> options) : DbContext(options)
 {
     public virtual DbSet<ReviewShop> ReviewShops { get; set; }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ReviewShop>()

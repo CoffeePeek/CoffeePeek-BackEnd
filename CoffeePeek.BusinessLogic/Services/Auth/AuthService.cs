@@ -26,29 +26,32 @@ public class AuthService(
             new SymmetricSecurityKey(key),
             SecurityAlgorithms.HmacSha256Signature);
 
-        var claims = new Dictionary<string, object>
-        {
-            { ClaimTypes.Name, user.Email! },
-            { ClaimTypes.NameIdentifier, user.Id.ToString() },
-            { JwtRegisteredClaimNames.Aud, "test" },
-            { JwtRegisteredClaimNames.Iss, "test" }
-        };
-
         var userRoles = await userManager.GetRolesAsync(user);
+        
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.Name, user.Email!),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString())
+        };
+    
+        claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+        
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = GenerateClaims(user, userRoles),
+            Subject = new ClaimsIdentity(claims, "Bearer"),
             Expires = DateTime.UtcNow.AddMinutes(_authOptions.ExpireIntervalMinutes),
             SigningCredentials = credentials,
-            Claims = claims,
-            Audience = "test",
-            Issuer = "test"
+            Audience = _authOptions.ValidAudience,
+            Issuer = _authOptions.ValidIssuer,    
+            NotBefore = DateTime.UtcNow           
         };
 
-        var token = handler.CreateToken(tokenDescriptor);
-        var result = handler.WriteToken(token);
 
-        return result;
+        var token = handler.CreateToken(tokenDescriptor);
+        return handler.WriteToken(token);
     }
 
     public string GenerateRefreshToken(int userId)
@@ -99,8 +102,7 @@ public class AuthService(
             using var aesAlg = Aes.Create();
 
             var keyBytes = Encoding.UTF8.GetBytes(_authOptions.JwtSecretKey);
-            using var sha256 = SHA256.Create();
-            var hashedKey = sha256.ComputeHash(keyBytes);
+            var hashedKey = SHA256.HashData(keyBytes);
 
             aesAlg.Key = hashedKey;
             aesAlg.IV = new byte[16];
@@ -121,13 +123,13 @@ public class AuthService(
         }
     }
 
-    private static ClaimsIdentity GenerateClaims(User user, IEnumerable<string> userRoles)
+    private ClaimsIdentity GenerateClaims(User user, IEnumerable<string> userRoles)
     {
-        var claims = new ClaimsIdentity();
+        var claims = new ClaimsIdentity("Bearer");
         claims.AddClaim(new Claim(ClaimTypes.Name, user.Email!));
         claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Aud, "test"));
-        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Iss, "test"));
+        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Aud, _authOptions.ValidAudience));
+        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Iss, _authOptions.ValidIssuer));
 
         foreach (var role in userRoles)
         {

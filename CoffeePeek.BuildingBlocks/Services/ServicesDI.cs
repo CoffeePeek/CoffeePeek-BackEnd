@@ -1,5 +1,6 @@
 using CoffeePeek.BusinessLogic.Abstractions;
 using CoffeePeek.BusinessLogic.Services;
+using CoffeePeek.BusinessLogic.Services.Auth;
 using CoffeePeek.Contract.Dtos.User;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +15,7 @@ public static class ServicesDI
         #region Validation
 
         services.AddTransient<IValidationStrategy<UserDto>, UserCreateValidationStrategy>();
-        
+        services.AddTransient<IUserContextService, UserContextService>();
         #endregion
 
         return services;

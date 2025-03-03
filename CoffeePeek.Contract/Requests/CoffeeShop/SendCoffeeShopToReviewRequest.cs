@@ -14,8 +14,11 @@ public class SendCoffeeShopToReviewRequest : IRequest<Response<SendCoffeeShopToR
     public string Name { get; set; }
     public string? Description { get; set; }
     public AddressDto Address { get; set; }
+    /// <summary>
+    /// its test in url phot links, in future its be byte[]
+    /// </summary>
     public List<ShopPhotoDtos>? ShopPhotos { get; set; }
     public List<ScheduleDto>? Schedules { get; set; }
     public List<ScheduleExceptionDto>? ScheduleExceptions { get; set; }
-    [JsonIgnore] public int UserId { get; set; }
+     public int UserId { get; set; }
 }

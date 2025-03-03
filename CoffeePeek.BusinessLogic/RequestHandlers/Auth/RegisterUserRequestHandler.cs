@@ -1,4 +1,5 @@
 using CoffeePeek.BusinessLogic.Abstractions;
+using CoffeePeek.Contract.Constants;
 using CoffeePeek.Contract.Dtos.User;
 using CoffeePeek.Contract.Requests.Auth;
 using CoffeePeek.Contract.Response;
@@ -45,14 +46,14 @@ public class RegisterUserRequestHandler(
 
         var createdUser = await userManager.FindByEmailAsync(request.Email);
         
-        //if (request.IsAdmin)
-        //{
-        //    var addRoleResult = await userManager.AddToRoleAsync(createdUser, RoleConsts.Admin);
-        //}
-        //else
-        //{
-        //    var addRoleResult = await userManager.AddToRoleAsync(createdUser, RoleConsts.User);
-        //}
+        if (request.IsAdmin)
+        {
+            var addRoleResult = await userManager.AddToRoleAsync(createdUser, RoleConsts.Admin);
+        }
+        else
+        {
+            var addRoleResult = await userManager.AddToRoleAsync(createdUser, RoleConsts.User);
+        }
         
         await userRepository.SaveChangesAsync(cancellationToken);
         
