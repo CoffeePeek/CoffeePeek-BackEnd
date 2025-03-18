@@ -10,20 +10,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoffeePeek.BusinessLogic.RequestHandlers;
 
-public class GetUserRequestHandler : IRequestHandler<GetUserRequest, Response<UserDto>>
+public class GetUserRequestHandler(IMapper mapper, 
+    IUnitOfWork<CoffeePeekDbContext> unitOfWork)
+    : IRequestHandler<GetUserRequest, Response<UserDto>>
 {
-    private readonly IUnitOfWork<CoffeePeekDbContext> _unitOfWork;
-    private readonly IMapper _mapper;
-
-    public GetUserRequestHandler(IMapper mapper, IUnitOfWork<CoffeePeekDbContext> unitOfWork)
-    {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Response<UserDto>> Handle(GetUserRequest request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.DbContext.Users
+        var user = await unitOfWork.DbContext.Users
             .FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
 
         if (user == null)
@@ -31,7 +24,7 @@ public class GetUserRequestHandler : IRequestHandler<GetUserRequest, Response<Us
             throw new NotFoundException("User not found.");
         }
         
-        var result = _mapper.Map<UserDto>(user);
+        var result = mapper.Map<UserDto>(user);
         
         return Response.SuccessResponse<Response<UserDto>>(result);
     }

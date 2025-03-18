@@ -16,11 +16,12 @@
       <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
       <PackageReference Include="Sentry.AspNetCore" Version="5.0.1" />
+      <PackageReference Include="StackExchange.Redis" Version="2.8.24" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CoffeePeek.BusinessLogic\CoffeePeek.BusinessLogic.csproj" />
+      <ProjectReference Include="..\CoffeePeek.Contract\CoffeePeek.Contract.csproj" />
     </ItemGroup>
 
 </Project>

@@ -5,5 +5,4 @@ namespace CoffeePeek.Data.Repositories;
 
 public class RefreshTokenRepository(CoffeePeekDbContext context) : Repository<RefreshToken>(context)
 {
-    private readonly CoffeePeekDbContext _context = context;
 }

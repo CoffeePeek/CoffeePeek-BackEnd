@@ -11,8 +11,15 @@ namespace CoffeePeek.Api.Controllers;
 [Route("api/[controller]")]
 public class UserController(IMediator mediator, IHub hub) : Controller
 {
-    
     [Authorize]
+    [HttpGet("test")] 
+
+    public IActionResult Test()
+    {
+        var claims = User.Claims.Select(c => new { c.Type, c.Value });
+        return Ok(claims);
+    }
+
     [HttpGet("Users")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -27,7 +34,7 @@ public class UserController(IMediator mediator, IHub hub) : Controller
         return result;
     }
     
-    /*[[HttpGet("{id:int}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -37,7 +44,7 @@ public class UserController(IMediator mediator, IHub hub) : Controller
         var result = await mediator.Send(request, cancellationToken);
 
         return result;
-    }*/
+    }
 
     [HttpDelete("{id:int}")]
     [Authorize]

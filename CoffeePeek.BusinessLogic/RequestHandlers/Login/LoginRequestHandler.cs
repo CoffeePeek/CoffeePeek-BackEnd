@@ -1,10 +1,12 @@
-using CoffeePeek.BusinessLogic.Services;
-using CoffeePeek.BusinessLogic.Services.Auth;
 using CoffeePeek.Contract.Requests.Auth;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.Login;
 using CoffeePeek.Data;
 using CoffeePeek.Data.Models.Users;
+using CoffeePeek.Infrastructure.Cache.Interfaces;
+using CoffeePeek.Infrastructure.Services;
+using CoffeePeek.Infrastructure.Services.Auth;
+using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -14,23 +16,30 @@ public class LoginRequestHandler(
     IHashingService hashingService,
     IRepository<RefreshToken> refreshTokenRepository,
     IAuthService authService,
-    UserManager<User> userManager)
+    UserManager<User> userManager, 
+    IRedisService redisService)
     : IRequestHandler<LoginRequest, Response<LoginResponse>>
 {
     public async Task<Response<LoginResponse>> Handle(LoginRequest request, CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByEmailAsync(request.Email);
+        var user = await redisService.GetAsync<User>(request.Email);
+
         if (user == null)
         {
-            return Response.ErrorResponse<Response<LoginResponse>>("Account does not exist.");
+            user = await userManager.FindByEmailAsync(request.Email);
+            
+            if (user == null)
+            {
+                return Response.ErrorResponse<Response<LoginResponse>>("Account does not exist.");
+            }
         }
-
+        
         var isPasswordValid = await userManager.CheckPasswordAsync(user, request.Password);
         if (!isPasswordValid)
         {
             return Response.ErrorResponse<Response<LoginResponse>>("Password is incorrect.");
         }
-
+        
         var accessToken = await authService.GenerateToken(user);
         var refreshToken = GenerateRefreshToken(user.Id);
 
