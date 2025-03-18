@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using CoffeePeek.BusinessLogic.Constants;
+using CoffeePeek.Infrastructure.Constants;
 
 namespace CoffeePeek.Api.Middleware;
 

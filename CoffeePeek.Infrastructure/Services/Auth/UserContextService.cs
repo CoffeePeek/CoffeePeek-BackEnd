@@ -1,7 +1,8 @@
-using CoffeePeek.BusinessLogic.Constants;
+using CoffeePeek.Infrastructure.Constants;
+using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace CoffeePeek.BusinessLogic.Services.Auth;
+namespace CoffeePeek.Infrastructure.Services.Auth;
 
 public class UserContextService(IHttpContextAccessor httpContextAccessor) : IUserContextService
 {

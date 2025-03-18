@@ -1,8 +1,8 @@
-using CoffeePeek.BusinessLogic.Services.Auth;
 using CoffeePeek.Contract.Constants;
 using CoffeePeek.Contract.Requests.CoffeeShop;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.CoffeeShop;
+using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

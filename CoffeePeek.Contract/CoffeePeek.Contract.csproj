@@ -10,4 +10,12 @@
       <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\CoffeePeek.Data\CoffeePeek.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Enums\" />
+    </ItemGroup>
+
 </Project>

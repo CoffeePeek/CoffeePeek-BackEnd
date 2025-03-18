@@ -1,7 +1,7 @@
 using CoffeePeek.Contract.Dtos.Address;
 using CoffeePeek.Contract.Dtos.Contact;
 using CoffeePeek.Contract.Dtos.Schedule;
-using CoffeePeek.Contract.Enums.Shop;
+using CoffeePeek.Data.Enums.Shop;
 
 namespace CoffeePeek.Contract.Dtos.CoffeeShop;
 

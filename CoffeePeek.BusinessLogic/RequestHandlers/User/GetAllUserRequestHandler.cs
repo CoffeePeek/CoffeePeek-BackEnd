@@ -10,7 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoffeePeek.BusinessLogic.RequestHandlers;
 
-public class GetAllUserRequestHandler(IUnitOfWork<CoffeePeekDbContext> unitOfWork, IMapper mapper)
+public class GetAllUserRequestHandler(IUnitOfWork<CoffeePeekDbContext> unitOfWork, 
+    IMapper mapper)
     : IRequestHandler<GetAllUsersRequest, Response<UserDto[]>>
 {
     public async Task<Response<UserDto[]>> Handle(GetAllUsersRequest request, CancellationToken cancellationToken)

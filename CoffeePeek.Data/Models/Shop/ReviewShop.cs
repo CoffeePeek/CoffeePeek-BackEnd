@@ -1,4 +1,4 @@
-using CoffeePeek.Contract.Enums.Shop;
+using CoffeePeek.Data.Enums.Shop;
 using CoffeePeek.Data.Models.Schedules;
 using CoffeePeek.Data.Models.Users;
 

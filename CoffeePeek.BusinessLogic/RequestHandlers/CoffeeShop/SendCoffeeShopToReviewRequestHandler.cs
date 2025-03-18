@@ -1,8 +1,8 @@
-using CoffeePeek.Contract.Enums.Shop;
 using CoffeePeek.Contract.Requests.CoffeeShop;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.CoffeeShop;
 using CoffeePeek.Data;
+using CoffeePeek.Data.Enums.Shop;
 using CoffeePeek.Data.Models.Shop;
 using MapsterMapper;
 using MediatR;

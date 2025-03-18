@@ -1,10 +1,8 @@
 using System.Text;
 using CoffeePeek.BuildingBlocks.Options;
-using CoffeePeek.BusinessLogic.Services.Auth;
-using CoffeePeek.Contract.Constants;
-using CoffeePeek.Contract.Options;
 using CoffeePeek.Data.Databases;
 using CoffeePeek.Data.Models.Users;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -97,8 +95,6 @@ public static class AuthBuilderExtensions
             options.AddPolicy("Merchant", policy => policy.RequireRole(RoleConsts.Merchant));
             options.AddPolicy("User", policy => policy.RequireRole(RoleConsts.User));
         });
-        
-        services.AddTransient<IAuthService, AuthService>();
         
         return services;
     }

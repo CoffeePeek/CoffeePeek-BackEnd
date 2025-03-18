@@ -1,4 +1,4 @@
-namespace CoffeePeek.BusinessLogic.Services.Auth;
+namespace CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 
 public interface IUserContextService
 {

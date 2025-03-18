@@ -2,26 +2,27 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using CoffeePeek.Contract.Options;
 using CoffeePeek.Data.Models.Users;
+using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using AuthenticationOptions = CoffeePeek.BuildingBlocks.AuthOptions.AuthenticationOptions;
 
-namespace CoffeePeek.BusinessLogic.Services.Auth;
+namespace CoffeePeek.Infrastructure.Services.Auth;
 
 public class AuthService(
     IOptions<AuthenticationOptions> authenticationOptions,
     UserManager<User> userManager) 
     : IAuthService
 {
-    private readonly AuthenticationOptions _authOptions = authenticationOptions.Value;
+    public AuthenticationOptions AuthOptions { get; } = authenticationOptions.Value;
 
     public async Task<string> GenerateToken(User user)
     {
         var handler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_authOptions.JwtSecretKey);
+        var key = Encoding.ASCII.GetBytes(AuthOptions.JwtSecretKey);
         var credentials = new SigningCredentials(
             new SymmetricSecurityKey(key),
             SecurityAlgorithms.HmacSha256Signature);
@@ -42,10 +43,10 @@ public class AuthService(
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims, "Bearer"),
-            Expires = DateTime.UtcNow.AddMinutes(_authOptions.ExpireIntervalMinutes),
+            Expires = DateTime.UtcNow.AddMinutes(AuthOptions.ExpireIntervalMinutes),
             SigningCredentials = credentials,
-            Audience = _authOptions.ValidAudience,
-            Issuer = _authOptions.ValidIssuer,    
+            Audience = AuthOptions.ValidAudience,
+            Issuer = AuthOptions.ValidIssuer,    
             NotBefore = DateTime.UtcNow           
         };
 
@@ -59,14 +60,14 @@ public class AuthService(
         var refreshTokenData = new
         {
             UserId = userId,
-            Expiry = DateTime.UtcNow.AddDays(_authOptions.ExpireRefreshIntervalDays)
+            Expiry = DateTime.UtcNow.AddDays(AuthOptions.ExpireRefreshIntervalDays)
         };
 
         var jsonData = JsonConvert.SerializeObject(refreshTokenData);
 
         using var aesAlg = Aes.Create();
 
-        var keyBytes = Encoding.UTF8.GetBytes(_authOptions.JwtSecretKey);
+        var keyBytes = Encoding.UTF8.GetBytes(AuthOptions.JwtSecretKey);
         using var sha256 = SHA256.Create();
         var hashedKey = sha256.ComputeHash(keyBytes);
 
@@ -101,8 +102,9 @@ public class AuthService(
 
             using var aesAlg = Aes.Create();
 
-            var keyBytes = Encoding.UTF8.GetBytes(_authOptions.JwtSecretKey);
-            var hashedKey = SHA256.HashData(keyBytes);
+            var keyBytes = Encoding.UTF8.GetBytes(AuthOptions.JwtSecretKey);
+            using var sha256 = SHA256.Create();
+            var hashedKey = sha256.ComputeHash(keyBytes);
 
             aesAlg.Key = hashedKey;
             aesAlg.IV = new byte[16];
@@ -128,8 +130,8 @@ public class AuthService(
         var claims = new ClaimsIdentity("Bearer");
         claims.AddClaim(new Claim(ClaimTypes.Name, user.Email!));
         claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Aud, _authOptions.ValidAudience));
-        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Iss, _authOptions.ValidIssuer));
+        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Aud, AuthOptions.ValidAudience));
+        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Iss, AuthOptions.ValidIssuer));
 
         foreach (var role in userRoles)
         {

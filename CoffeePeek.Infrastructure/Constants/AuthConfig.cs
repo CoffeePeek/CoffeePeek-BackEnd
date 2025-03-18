@@ -1,4 +1,4 @@
-namespace CoffeePeek.BusinessLogic.Constants;
+namespace CoffeePeek.Infrastructure.Constants;
 
 public static class AuthConfig
 {

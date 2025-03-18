@@ -46,6 +46,8 @@ public interface IRepository<TEntity> where TEntity : class
     /// <returns>IQueryable queries</returns>
     IQueryable<TEntity> GetAll();
 
+    Task<List<TEntity>> GetAllAsync();
+
     /// <summary>
     /// Find queries by predicate (where logic)
     /// </summary>

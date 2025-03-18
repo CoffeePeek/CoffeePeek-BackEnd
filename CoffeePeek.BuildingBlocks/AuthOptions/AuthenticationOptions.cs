@@ -1,4 +1,4 @@
-namespace CoffeePeek.Contract.Options;
+namespace CoffeePeek.BuildingBlocks.AuthOptions;
 
 public class AuthenticationOptions
 {

@@ -1,3 +1,4 @@
+using CoffeePeek.BuildingBlocks.AuthOptions;
 using CoffeePeek.BusinessLogic.Abstractions;
 using CoffeePeek.Contract.Constants;
 using CoffeePeek.Contract.Dtos.User;
@@ -6,6 +7,7 @@ using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.Auth;
 using CoffeePeek.Data;
 using CoffeePeek.Data.Models.Users;
+using CoffeePeek.Infrastructure.Cache.Interfaces;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +18,8 @@ public class RegisterUserRequestHandler(
     IRepository<User> userRepository,
     IMapper mapper,
     IValidationStrategy<UserDto> validationStrategy,
-    UserManager<User> userManager)
+    UserManager<User> userManager,
+    IRedisService redisService)
     : IRequestHandler<RegisterUserRequest, Response<RegisterUserResponse>>
 {
     public async Task<Response<RegisterUserResponse>> Handle(RegisterUserRequest request, CancellationToken cancellationToken)
@@ -43,20 +46,24 @@ public class RegisterUserRequestHandler(
         {
             return Response.ErrorResponse<Response<RegisterUserResponse>>(createUserResult.ToString());
         }
-
-        var createdUser = await userManager.FindByEmailAsync(request.Email);
         
-        if (request.IsAdmin)
-        {
-            var addRoleResult = await userManager.AddToRoleAsync(createdUser, RoleConsts.Admin);
-        }
-        else
-        {
-            var addRoleResult = await userManager.AddToRoleAsync(createdUser, RoleConsts.User);
-        }
+        //if (request.IsAdmin)
+        //{
+        //    var addRoleResult = await userManager.AddToRoleAsync(createdUser, RoleConsts.Admin);
+        //}
+        //else
+        //{
+        //    var addRoleResult = await userManager.AddToRoleAsync(createdUser, RoleConsts.User);
+        //}
         
         await userRepository.SaveChangesAsync(cancellationToken);
         
-        return Response.SuccessResponse<Response<RegisterUserResponse>>(mapper.Map<RegisterUserResponse>(user));
+        var createdUser = await userManager.FindByEmailAsync(request.Email);
+        
+        await redisService.SetAsync($"{nameof(User)}{createdUser!.Id}", createdUser);
+
+        var result = mapper.Map<RegisterUserResponse>(createdUser);
+        
+        return Response.SuccessResponse<Response<RegisterUserResponse>>(result);
     }
 }
