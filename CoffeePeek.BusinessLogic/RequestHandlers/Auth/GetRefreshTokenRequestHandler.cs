@@ -7,6 +7,7 @@ using CoffeePeek.Data.Databases;
 using CoffeePeek.Data.Models.Users;
 using CoffeePeek.Infrastructure.Services;
 using CoffeePeek.Infrastructure.Services.Auth;
+using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

@@ -1,6 +1,6 @@
 using CoffeePeek.Data.Models.Users;
 
-namespace CoffeePeek.Infrastructure.Services.Auth;
+namespace CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 
 public interface IAuthService
 {

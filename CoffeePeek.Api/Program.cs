@@ -32,28 +32,43 @@ builder.Services
     {
         opt.UseNpgsql(dbOptions.ConnectionString, b => b.MigrationsAssembly("CoffeePeek.Data"));
     })
+    .AddDbContext<ReviewCoffeePeekDbContext>(opt =>
+    {
+        opt.UseNpgsql(dbOptions.ReviewConnectionString, b => b.MigrationsAssembly("CoffeePeek.Data"));
+    })
     .ConfigureDbRepositories();
 builder.Services.RedisConfigurationOptions();
 builder.Services.AddMapster();
 MapsterConfig.MapperConfigure();
-
 
 builder.Services
     .AddSwagger()
     .AddBearerAuthentication()
     .AddValidators()
     .RegisterInfrastructure()
+    .AddUserIdentity()
     .AddControllers();
-
-//builder.Services.AddHostedService<RoleInitializer>();
 
 var app = builder.Build();
 
-app.UseMiddleware<ErrorHandlerMiddleware>();
+/*using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRoleEntity>>();
+    
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRoleEntity("Admin"));
+        await roleManager.CreateAsync(new IdentityRoleEntity("Merchant"));
+        await roleManager.CreateAsync(new IdentityRoleEntity("User"));
+    }
+}*/
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<ErrorHandlerMiddleware>();
+app.UseMiddleware<UserTokenMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 
