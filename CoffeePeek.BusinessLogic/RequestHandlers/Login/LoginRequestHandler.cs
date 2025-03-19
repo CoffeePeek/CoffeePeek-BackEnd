@@ -6,6 +6,7 @@ using CoffeePeek.Data.Models.Users;
 using CoffeePeek.Infrastructure.Cache.Interfaces;
 using CoffeePeek.Infrastructure.Services;
 using CoffeePeek.Infrastructure.Services.Auth;
+using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 

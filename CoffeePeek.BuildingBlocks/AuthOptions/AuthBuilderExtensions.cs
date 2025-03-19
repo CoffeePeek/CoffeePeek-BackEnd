@@ -2,10 +2,14 @@ using System.Text;
 using CoffeePeek.BuildingBlocks.Options;
 using CoffeePeek.Data.Databases;
 using CoffeePeek.Data.Models.Users;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CoffeePeek.BuildingBlocks.AuthOptions;
@@ -16,11 +20,12 @@ public static class AuthBuilderExtensions
     {
         var authOptions = services.AddValidateOptions<AuthenticationOptions>();
         
-        services
-            .AddAuthentication(x =>
+        services.AddAuthentication(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(x =>
             {
@@ -30,14 +35,58 @@ public static class AuthBuilderExtensions
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(authOptions.JwtSecretKey)),
-                    ValidIssuer = "test",
-                    ValidAudience = "test",
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidIssuer = authOptions.ValidIssuer,
+                    ValidAudience = authOptions.ValidAudience,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero
                 };
+                
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
+                        logger.LogInformation($"Token received: {context.Token}");
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
+                        logger.LogInformation("Token validated successfully");
+            
+                        var claims = context.Principal?.Claims;
+                        if (claims != null)
+                        {
+                            foreach (var claim in claims)
+                            {
+                                logger.LogInformation($"Validated Claim: {claim.Type} - {claim.Value}");
+                            }
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
+                        logger.LogError($"Authentication failed: {context.Exception.Message}");
+                        if (context.Exception is SecurityTokenExpiredException)
+                        {
+                            logger.LogError("Token expired");
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
+                        logger.LogWarning($"Challenge requested: {context.Error}, {context.ErrorDescription}");
+                        return Task.CompletedTask;
+                    }
+
+                };
+
             });
         
         services.AddAuthorization(options =>
@@ -47,12 +96,10 @@ public static class AuthBuilderExtensions
             options.AddPolicy("User", policy => policy.RequireRole(RoleConsts.User));
         });
         
-        AddUserIdentity(services);
-        
         return services;
     }
 
-    private static void AddUserIdentity(IServiceCollection services)
+    public static IServiceCollection AddUserIdentity(this IServiceCollection services)
     {
         services.AddDefaultIdentity<User>(options =>
             {
@@ -64,5 +111,7 @@ public static class AuthBuilderExtensions
             .AddEntityFrameworkStores<CoffeePeekDbContext>()
             .AddUserManager<UserManager<User>>()
             .AddUserStore<UserStore<User, IdentityRoleEntity, CoffeePeekDbContext, int>>();
+        
+        return services;
     }
 }

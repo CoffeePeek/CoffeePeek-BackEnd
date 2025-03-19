@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using CoffeePeek.Data.Models.Users;
+using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -26,29 +27,32 @@ public class AuthService(
             new SymmetricSecurityKey(key),
             SecurityAlgorithms.HmacSha256Signature);
 
-        var claims = new Dictionary<string, object>
-        {
-            { ClaimTypes.Name, user.Email! },
-            { ClaimTypes.NameIdentifier, user.Id.ToString() },
-            { JwtRegisteredClaimNames.Aud, "test" },
-            { JwtRegisteredClaimNames.Iss, "test" }
-        };
-
         var userRoles = await userManager.GetRolesAsync(user);
+        
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.Name, user.Email!),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString())
+        };
+    
+        claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+        
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = GenerateClaims(user, userRoles),
+            Subject = new ClaimsIdentity(claims, "Bearer"),
             Expires = DateTime.UtcNow.AddMinutes(AuthOptions.ExpireIntervalMinutes),
             SigningCredentials = credentials,
-            Claims = claims,
-            Audience = "test",
-            Issuer = "test"
+            Audience = AuthOptions.ValidAudience,
+            Issuer = AuthOptions.ValidIssuer,    
+            NotBefore = DateTime.UtcNow           
         };
 
-        var token = handler.CreateToken(tokenDescriptor);
-        var result = handler.WriteToken(token);
 
-        return result;
+        var token = handler.CreateToken(tokenDescriptor);
+        return handler.WriteToken(token);
     }
 
     public string GenerateRefreshToken(int userId)
@@ -121,13 +125,13 @@ public class AuthService(
         }
     }
 
-    private static ClaimsIdentity GenerateClaims(User user, IEnumerable<string> userRoles)
+    private ClaimsIdentity GenerateClaims(User user, IEnumerable<string> userRoles)
     {
-        var claims = new ClaimsIdentity();
+        var claims = new ClaimsIdentity("Bearer");
         claims.AddClaim(new Claim(ClaimTypes.Name, user.Email!));
         claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Aud, "test"));
-        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Iss, "test"));
+        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Aud, AuthOptions.ValidAudience));
+        claims.AddClaim(new Claim(JwtRegisteredClaimNames.Iss, AuthOptions.ValidIssuer));
 
         foreach (var role in userRoles)
         {
