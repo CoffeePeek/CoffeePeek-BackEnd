@@ -38,13 +38,7 @@ public class CoffeeShopController(IMediator mediator, IUserContextService userCo
         return response;
     }
 
-    private void AddPaginationHeaders(GetCoffeeShopsResponse data)
-    {
-        Response.Headers.TryAdd("X-Total-Count", data.TotalItems.ToString());
-        Response.Headers.TryAdd("X-Total-Pages", data.TotalPages.ToString());
-        Response.Headers.TryAdd("X-Current-Page", data.CurrentPage.ToString());
-        Response.Headers.TryAdd("X-Page-Size", data.PageSize.ToString());
-    }
+
 
     [HttpPost("send-to-review")]
     [Authorize]
@@ -74,5 +68,13 @@ public class CoffeeShopController(IMediator mediator, IUserContextService userCo
         var request = new GetCoffeeShopsInReviewByIdRequest(userId);
         
         return await mediator.Send(request);
+    }
+
+    private void AddPaginationHeaders(GetCoffeeShopsResponse data)
+    {
+        Response.Headers.TryAdd("X-Total-Count", data.TotalItems.ToString());
+        Response.Headers.TryAdd("X-Total-Pages", data.TotalPages.ToString());
+        Response.Headers.TryAdd("X-Current-Page", data.CurrentPage.ToString());
+        Response.Headers.TryAdd("X-Page-Size", data.PageSize.ToString());
     }
 }
