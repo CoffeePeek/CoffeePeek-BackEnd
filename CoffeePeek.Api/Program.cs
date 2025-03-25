@@ -4,12 +4,14 @@ using CoffeePeek.BuildingBlocks.AuthOptions;
 using CoffeePeek.BuildingBlocks.EfCore;
 using CoffeePeek.BuildingBlocks.Extensions;
 using CoffeePeek.BuildingBlocks.Options;
+using CoffeePeek.BuildingBlocks.RabbitMq;
 using CoffeePeek.BuildingBlocks.RedisOptions;
 using CoffeePeek.BuildingBlocks.Sentry;
 using CoffeePeek.BusinessLogic.Configuration;
 using CoffeePeek.Data.Databases;
 using CoffeePeek.Data.Mapper;
 using CoffeePeek.Infrastructure.Configuration;
+using CoffeePeek.Infrastructure.RabbitMq;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,6 +50,11 @@ builder.Services
     .RegisterInfrastructure()
     .AddUserIdentity()
     .AddControllers();
+
+builder.Services.AddValidateOptions<RabbitMqOptions>();
+var rabbitOptions = builder.Services.GetOptions<RabbitMqOptions>();
+
+builder.Services.AddHostedService<PhotoUploadConsumer>(x => new PhotoUploadConsumer(rabbitOptions.HostName, rabbitOptions.QueueName));
 
 var app = builder.Build();
 

@@ -38,20 +38,19 @@ public class CoffeeShopController(IMediator mediator, IUserContextService userCo
         return response;
     }
 
-
-
     [HttpPost("send-to-review")]
     [Authorize]
-    public async Task<Response<SendCoffeeShopToReviewResponse>> SendCoffeeShopToReview(
-        [FromBody] SendCoffeeShopToReviewRequest request)
+    public async Task<Response<SendCoffeeShopToReviewResponse>> SendCoffeeShopToReview(SendCoffeeShopToReviewRequest request, IFormFile file)
     {
         if (!userContextService.TryGetUserId(out var userId))
         {
             return Contract.Response.Response.ErrorResponse<Response<SendCoffeeShopToReviewResponse>>(
                 "User ID not found or invalid.");
         }
-    
+
         request.UserId = userId;
+        request.ShopPhotos.Add(file);
+        
         return await mediator.Send(request);
     }
     

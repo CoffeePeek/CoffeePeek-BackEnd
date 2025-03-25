@@ -2,13 +2,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using CoffeePeek.BuildingBlocks.AuthOptions;
 using CoffeePeek.Data.Models.Users;
 using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using AuthenticationOptions = CoffeePeek.BuildingBlocks.AuthOptions.AuthenticationOptions;
 
 namespace CoffeePeek.Infrastructure.Services.Auth;
 
