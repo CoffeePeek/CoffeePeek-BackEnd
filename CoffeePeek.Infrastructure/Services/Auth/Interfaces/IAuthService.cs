@@ -1,3 +1,4 @@
+using CoffeePeek.Data.Entities.Users;
 using CoffeePeek.Data.Models.Users;
 
 namespace CoffeePeek.Infrastructure.Services.Auth.Interfaces;

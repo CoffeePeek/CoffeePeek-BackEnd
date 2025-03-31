@@ -1,5 +1,5 @@
 using CoffeePeek.Data.Databases;
-using CoffeePeek.Data.Models.Users;
+using CoffeePeek.Data.Entities.Users;
 
 namespace CoffeePeek.Data.Repositories;
 

@@ -1,3 +1,4 @@
+using CoffeePeek.Data.Entities.Address;
 using CoffeePeek.Data.Models.Address;
 using Microsoft.EntityFrameworkCore;
 
