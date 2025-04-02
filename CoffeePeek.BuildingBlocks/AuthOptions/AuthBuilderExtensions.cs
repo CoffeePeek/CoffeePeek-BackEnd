@@ -1,6 +1,7 @@
 using System.Text;
 using CoffeePeek.BuildingBlocks.Options;
 using CoffeePeek.Data.Databases;
+using CoffeePeek.Data.Entities.Users;
 using CoffeePeek.Data.Models.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
