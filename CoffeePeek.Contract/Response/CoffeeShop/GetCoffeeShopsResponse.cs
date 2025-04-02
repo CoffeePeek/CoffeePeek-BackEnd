@@ -7,12 +7,13 @@ public class GetCoffeeShopsResponse
 {
     [JsonPropertyName("content")]
     public CoffeeShopDto[] CoffeeShopDtos { get; set; }
-    [JsonPropertyName("page")]
+
+    [JsonIgnore]
     public int CurrentPage { get; set; }
-    [JsonPropertyName("pageSize")]
+    [JsonIgnore]
     public int PageSize { get; set; }
-    [JsonPropertyName("totalItems")]
+    [JsonIgnore]
     public int TotalItems { get; set; }
-    [JsonPropertyName("totalPages")]
+    [JsonIgnore]
     public int TotalPages { get; set; }
 }

@@ -37,13 +37,22 @@ public class CoffeeShopController(IMediator mediator) : Controller
         return response;
     }
 
-    [HttpPost]
+
+    [HttpPost("send-to-review")]
     [Authorize]
     public Task<Response<UpdateCoffeeShopResponse>> UpdateCoffeeShop(UpdateCoffeeShopRequest request)
     {
         return mediator.Send(request);
     }
     
+    private void AddPaginationHeaders(GetCoffeeShopsResponse data)
+    {
+        Response.Headers.TryAdd("X-Total-Count", data.TotalItems.ToString());
+        Response.Headers.TryAdd("X-Total-Pages", data.TotalPages.ToString());
+        Response.Headers.TryAdd("X-Current-Page", data.CurrentPage.ToString());
+        Response.Headers.TryAdd("X-Page-Size", data.PageSize.ToString());
+    }
+
     private void AddPaginationHeaders(GetCoffeeShopsResponse data)
     {
         Response.Headers.TryAdd("X-Total-Count", data.TotalItems.ToString());
