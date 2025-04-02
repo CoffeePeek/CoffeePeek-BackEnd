@@ -12,10 +12,10 @@ namespace CoffeePeek.Contract.Requests.CoffeeShop;
 public class UpdateCoffeeShopRequest : IRequest<Response<UpdateCoffeeShopResponse>>
 {
     [JsonIgnore] public int UserId { get; set; }
-    [FromBody] public int ShopId { get; set; }
-    [FromBody] public string? Description { get; set; }
-    [FromBody] public AddressDto? Address { get; set; }
-    [FromBody] public List<IFormFile>? ShopPhotos { get; set; }
-    [FromBody] public List<ScheduleDto>? Schedules { get; set; }
-    [FromBody] public List<ScheduleExceptionDto>? ScheduleExceptions { get; set; }
+    public int ShopId { get; set; }
+    public string? Description { get; set; }
+    public AddressDto? Address { get; set; }
+    public List<IFormFile>? ShopPhotos { get; set; }
+    public List<ScheduleDto>? Schedules { get; set; }
+    public List<ScheduleExceptionDto>? ScheduleExceptions { get; set; }
 }

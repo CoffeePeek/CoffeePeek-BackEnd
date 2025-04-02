@@ -40,7 +40,7 @@ public class CoffeeShopController(IMediator mediator) : Controller
 
     [HttpPost("send-to-review")]
     [Authorize]
-    public Task<Response<UpdateCoffeeShopResponse>> UpdateCoffeeShop(UpdateCoffeeShopRequest request)
+    public Task<Response<UpdateCoffeeShopResponse>> UpdateCoffeeShop([FromForm] UpdateCoffeeShopRequest request)
     {
         return mediator.Send(request);
     }
