@@ -6,6 +6,7 @@ using CoffeePeek.Contract.Requests.Auth;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.Auth;
 using CoffeePeek.Data;
+using CoffeePeek.Data.Entities.Users;
 using CoffeePeek.Data.Models.Users;
 using CoffeePeek.Infrastructure.Cache.Interfaces;
 using MapsterMapper;

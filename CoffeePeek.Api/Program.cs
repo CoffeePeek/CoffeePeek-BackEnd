@@ -8,7 +8,6 @@ using CoffeePeek.BuildingBlocks.RedisOptions;
 using CoffeePeek.BuildingBlocks.Sentry;
 using CoffeePeek.BusinessLogic.Configuration;
 using CoffeePeek.Data.Databases;
-using CoffeePeek.Data.Mapper;
 using CoffeePeek.Infrastructure.Configuration;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -32,16 +31,11 @@ builder.Services
     {
         opt.UseNpgsql(dbOptions.ConnectionString, b => b.MigrationsAssembly("CoffeePeek.Data"));
     })
-    .AddDbContext<ReviewCoffeePeekDbContext>(opt =>
-    {
-        opt.UseNpgsql(dbOptions.ReviewConnectionString, b => b.MigrationsAssembly("CoffeePeek.Data"));
-    })
     .ConfigureDbRepositories();
 builder.Services.RedisConfigurationOptions();
-builder.Services.AddMapster();
-MapsterConfig.MapperConfigure();
 
 builder.Services
+    .ConfigureMapster()
     .AddSwagger()
     .AddBearerAuthentication()
     .AddValidators()

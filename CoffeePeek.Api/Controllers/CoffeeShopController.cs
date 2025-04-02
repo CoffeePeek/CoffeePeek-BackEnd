@@ -2,7 +2,6 @@ using CoffeePeek.Contract.Constants;
 using CoffeePeek.Contract.Requests.CoffeeShop;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.CoffeeShop;
-using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +11,7 @@ namespace CoffeePeek.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CoffeeShopController(IMediator mediator, IUserContextService userContextService) : Controller
+public class CoffeeShopController(IMediator mediator) : Controller
 {
     [HttpGet]
     [ProducesResponseType(typeof(Response<GetCoffeeShopsResponse>), StatusCodes.Status200OK)]
@@ -39,35 +38,19 @@ public class CoffeeShopController(IMediator mediator, IUserContextService userCo
     }
 
 
-
     [HttpPost("send-to-review")]
     [Authorize]
-    public async Task<Response<SendCoffeeShopToReviewResponse>> SendCoffeeShopToReview(
-        [FromBody] SendCoffeeShopToReviewRequest request)
+    public Task<Response<UpdateCoffeeShopResponse>> UpdateCoffeeShop(UpdateCoffeeShopRequest request)
     {
-        if (!userContextService.TryGetUserId(out var userId))
-        {
-            return Contract.Response.Response.ErrorResponse<Response<SendCoffeeShopToReviewResponse>>(
-                "User ID not found or invalid.");
-        }
-    
-        request.UserId = userId;
-        return await mediator.Send(request);
+        return mediator.Send(request);
     }
     
-    [HttpGet("in-review")]
-    [Authorize]
-    public async Task<Response<GetCoffeeShopsInReviewByIdResponse>> GetCoffeeShopsInReviewById()
+    private void AddPaginationHeaders(GetCoffeeShopsResponse data)
     {
-        if (!userContextService.TryGetUserId(out var userId))
-        {
-            return Contract.Response.Response.ErrorResponse<Response<GetCoffeeShopsInReviewByIdResponse>>(
-                "User ID not found or invalid.");
-        }
-
-        var request = new GetCoffeeShopsInReviewByIdRequest(userId);
-        
-        return await mediator.Send(request);
+        Response.Headers.TryAdd("X-Total-Count", data.TotalItems.ToString());
+        Response.Headers.TryAdd("X-Total-Pages", data.TotalPages.ToString());
+        Response.Headers.TryAdd("X-Current-Page", data.CurrentPage.ToString());
+        Response.Headers.TryAdd("X-Page-Size", data.PageSize.ToString());
     }
 
     private void AddPaginationHeaders(GetCoffeeShopsResponse data)

@@ -20,5 +20,9 @@ internal static class ShopExtensions
         modelBuilder.Entity<ShopPhoto>()
             .Property(b => b.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        
+        modelBuilder.Entity<ReviewShop>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }
 }
