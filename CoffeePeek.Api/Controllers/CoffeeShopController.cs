@@ -3,6 +3,7 @@ using CoffeePeek.Contract.Requests.CoffeeShop;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.CoffeeShop;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -37,6 +38,7 @@ public class CoffeeShopController(IMediator mediator) : Controller
     }
 
     [HttpPost]
+    [Authorize]
     public Task<Response<UpdateCoffeeShopResponse>> UpdateCoffeeShop(UpdateCoffeeShopRequest request)
     {
         return mediator.Send(request);
