@@ -1,4 +1,4 @@
-namespace CoffeePeek.Contract.Response.CoffeeShop;
+namespace CoffeePeek.Contract.Response.CoffeeShop.Review;
 
 public class SendCoffeeShopToReviewResponse
 {

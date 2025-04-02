@@ -1,6 +1,7 @@
 using CoffeePeek.Contract.Requests.CoffeeShop.Review;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.CoffeeShop;
+using CoffeePeek.Contract.Response.CoffeeShop.Review;
 using CoffeePeek.Data;
 using CoffeePeek.Data.Enums.Shop;
 using CoffeePeek.Data.Models.Address;
@@ -36,6 +37,6 @@ public class SendCoffeeShopToReviewRequestHandler(
         
         await reviewShopRepository.SaveChangesAsync(cancellationToken);
         
-        return Response.SuccessResponse<Response<SendCoffeeShopToReviewResponse>>("CoffeeShop added to review.");
+        return Response.SuccessResponse<Response<SendCoffeeShopToReviewResponse>>(null, "CoffeeShop added to review.");
     }
 }

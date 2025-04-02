@@ -21,8 +21,10 @@ public class GetCoffeeShopsInReviewByIdRequestHandler(
         var reviewShops = await reviewShopRepository.FindBy(x => x.UserId == request.UserId)
             .ToArrayAsync(cancellationToken);
 
-        var result = mapper.Map<ReviewShopDto[]>(reviewShops);
+        var reviews = mapper.Map<ReviewShopDto[]>(reviewShops);
 
+        var result = new GetCoffeeShopsInReviewByIdResponse(reviews);
+        
         return Response.SuccessResponse<Response<GetCoffeeShopsInReviewByIdResponse>>(result);
     }
 }

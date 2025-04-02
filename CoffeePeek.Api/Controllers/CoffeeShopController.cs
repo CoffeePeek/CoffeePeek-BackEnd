@@ -52,12 +52,4 @@ public class CoffeeShopController(IMediator mediator) : Controller
         Response.Headers.TryAdd("X-Current-Page", data.CurrentPage.ToString());
         Response.Headers.TryAdd("X-Page-Size", data.PageSize.ToString());
     }
-
-    private void AddPaginationHeaders(GetCoffeeShopsResponse data)
-    {
-        Response.Headers.TryAdd("X-Total-Count", data.TotalItems.ToString());
-        Response.Headers.TryAdd("X-Total-Pages", data.TotalPages.ToString());
-        Response.Headers.TryAdd("X-Current-Page", data.CurrentPage.ToString());
-        Response.Headers.TryAdd("X-Page-Size", data.PageSize.ToString());
-    }
 }

@@ -9,6 +9,6 @@ public class MapsterConfig : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<SendCoffeeShopToReviewRequest, ReviewShop>()
-            .Map(d => d.NotValidatedAddress, s => s.Address);
+            .Map(d => d.NotValidatedAddress, s => s.NotValidatedAddress);
     }
 }
