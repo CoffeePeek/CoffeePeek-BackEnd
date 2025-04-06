@@ -7,6 +7,7 @@ public class GetCoffeeShopsResponse
 {
     [JsonPropertyName("content")]
     public CoffeeShopDto[] CoffeeShopDtos { get; set; }
+
     [JsonIgnore]
     public int CurrentPage { get; set; }
     [JsonIgnore]
