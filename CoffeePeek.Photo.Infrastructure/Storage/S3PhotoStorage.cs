@@ -1,7 +1,7 @@
 using Amazon.S3;
 using Amazon.S3.Transfer;
-using CoffeePeek.Photo.Application.Interfaces;
-using CoffeePeek.Photo.Application.Services;
+using CoffeePeek.Photo.Core.Interfaces;
+using CoffeePeek.Photo.Infrastructure.Constants;
 using CoffeePeek.Photo.Infrastructure.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -26,23 +26,22 @@ public class S3PhotoStorage : IPhotoStorage
         _s3Client = new AmazonS3Client(_options.AccessKey, _options.SecretKey, config);
     }
     
-    public async Task<string> UploadPhotoAsync(IFormFile file)
+    public async Task<string> UploadPhotoAsync(byte[] photoBytes, string keyName)
     {
-        var fileName = $"{Guid.NewGuid()}_{file.FileName}";
-        await using var stream = file.OpenReadStream();
+        await using var stream = new MemoryStream(photoBytes);
 
         var uploadRequest = new TransferUtilityUploadRequest
         {
             InputStream = stream,
-            Key = fileName,
+            Key = keyName,
             BucketName = _options.PhotoSpaceName,
-            ContentType = file.ContentType,
+            ContentType = ContentType.ImageContentType,
             CannedACL = S3CannedACL.PublicRead
         };
 
         var transferUtility = new TransferUtility(_s3Client);
         await transferUtility.UploadAsync(uploadRequest);
 
-        return $"{_options.Endpoint}/{_options.PhotoSpaceName}/{fileName}";
+        return $"{_options.Endpoint}/{_options.PhotoSpaceName}/{keyName}";
     }
 }

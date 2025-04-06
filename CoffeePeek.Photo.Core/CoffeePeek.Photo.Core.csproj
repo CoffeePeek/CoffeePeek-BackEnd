@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="RabbitMQ\Interfaces\" />
+      <ProjectReference Include="..\CoffeePeek.Photo.BuildingBlocks\CoffeePeek.Photo.BuildingBlocks.csproj" />
     </ItemGroup>
 
 </Project>

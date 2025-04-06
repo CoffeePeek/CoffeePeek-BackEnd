@@ -1,4 +1,5 @@
 using CoffeePeek.Data.Entities;
+using CoffeePeek.Data.Entities.Shop;
 using CoffeePeek.Data.Enums.Shop;
 using CoffeePeek.Data.Models.Schedules;
 

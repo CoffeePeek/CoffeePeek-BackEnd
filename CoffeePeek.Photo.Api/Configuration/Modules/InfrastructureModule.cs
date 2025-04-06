@@ -1,4 +1,4 @@
-using CoffeePeek.Photo.Application.Interfaces;
+using CoffeePeek.Photo.Core.Interfaces;
 using CoffeePeek.Photo.Infrastructure.Options;
 using CoffeePeek.Photo.Infrastructure.Storage;
 

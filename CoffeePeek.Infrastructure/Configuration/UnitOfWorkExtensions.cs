@@ -41,6 +41,7 @@ public static class UnitOfWorkExtensions
         services.AddCustomRepository<City, CityRepository>();
         
         services.AddCustomRepository<ReviewShop, ReviewShopsRepository>();
+        services.AddScoped<IReviewShopsRepository, ReviewShopsRepository>();
         
         return services;
     }

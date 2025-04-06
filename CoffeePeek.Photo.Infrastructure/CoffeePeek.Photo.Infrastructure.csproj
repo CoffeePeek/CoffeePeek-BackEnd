@@ -7,19 +7,24 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Reference Include="MassTransit.Abstractions">
+        <HintPath>..\..\..\.nuget\packages\masstransit.abstractions\8.4.0\lib\net8.0\MassTransit.Abstractions.dll</HintPath>
+      </Reference>
       <Reference Include="Microsoft.AspNetCore.Http.Features">
         <HintPath>..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\8.0.14\ref\net8.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Extensions.Options">
+        <HintPath>..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\8.0.14\ref\net8.0\Microsoft.Extensions.Options.dll</HintPath>
       </Reference>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CoffeePeek.Photo.Application\CoffeePeek.Photo.Application.csproj" />
-      <ProjectReference Include="..\CoffeePeek.Photo.BuildingBlocks\CoffeePeek.Photo.BuildingBlocks.csproj" />
+      <PackageReference Include="AWSSDK.S3" Version="3.7.415.23" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AWSSDK.S3" Version="3.7.415.23" />
-      <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
+      <ProjectReference Include="..\ClassLibrary.SharedModels\ClassLibrary.SharedModels.csproj" />
+      <ProjectReference Include="..\CoffeePeek.Photo.Core\CoffeePeek.Photo.Core.csproj" />
     </ItemGroup>
 
 </Project>

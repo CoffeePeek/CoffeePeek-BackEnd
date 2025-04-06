@@ -22,7 +22,7 @@ public static class Configuration
     {
         service.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(Assembly.GetEntryAssembly());
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
 
 

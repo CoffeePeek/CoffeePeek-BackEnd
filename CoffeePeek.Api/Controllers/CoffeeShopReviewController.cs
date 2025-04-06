@@ -51,7 +51,7 @@ public class CoffeeShopReviewController(IMediator mediator, IUserContextService 
     [HttpPut]
     [Description("Updates a coffee shop to review")]
     public async Task<Response<UpdateReviewCoffeeShopResponse>> UpdateReviewCoffeeShop(
-        [FromBody] UpdateReviewCoffeeShopRequest request)
+        [FromForm] UpdateReviewCoffeeShopRequest request)
     {
         if (!userContextService.TryGetUserId(out var userId))
         {

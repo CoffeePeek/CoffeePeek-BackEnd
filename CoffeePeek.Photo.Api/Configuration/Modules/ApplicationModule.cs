@@ -1,6 +1,5 @@
-using CoffeePeek.Photo.Application.Interfaces;
-using CoffeePeek.Photo.Application.Services;
-using CoffeePeek.Photo.Infrastructure.RabbitMQ;
+using CoffeePeek.Photo.Infrastructure.Consumers;
+using MassTransit;
 
 namespace CoffeePeek.Photo.Api.Configuration;
 
@@ -10,11 +9,23 @@ internal static class ApplicationModule
     {
         services.AddValidateOptions<RabbitMqOptions>();
         
-        services.AddScoped<IPhotoUploadService, PhotoUploadService>();
-        
         var rabbitMqOptions = services.GetOptions<RabbitMqOptions>();
-        services.AddSingleton<IRabbitMqPublisher>(sp =>
-            new RabbitMqPublisher(rabbitMqOptions.HostName, rabbitMqOptions.QueueName));
+
+        services.AddMassTransit(x =>
+        {
+            x.AddConsumer<PhotoUploadRequestedConsumer>();
+
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(rabbitMqOptions.HostName, 28315, "/", h =>
+                {
+                    h.Username(rabbitMqOptions.Username);
+                    h.Password(rabbitMqOptions.Password);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
         
         return services;
     }
