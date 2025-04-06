@@ -2,12 +2,13 @@ using CoffeePeek.BusinessLogic.Models;
 using CoffeePeek.Contract.Requests.CoffeeShop.Review;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Data;
+using CoffeePeek.Data.Entities.Shop;
 using CoffeePeek.Data.Models.Shop;
 using MediatR;
 
 namespace CoffeePeek.BusinessLogic.RequestHandlers.CoffeeShop.Review;
 
-public class UpdateReviewCoffeeShopStatusRequestHandler(IRepository<ReviewShop> reviewRepository)
+internal class UpdateReviewCoffeeShopStatusRequestHandler(IRepository<ReviewShop> reviewRepository)
     : IRequestHandler<UpdateReviewCoffeeShopStatusRequest, Response>
 {
     public async Task<Response> Handle(UpdateReviewCoffeeShopStatusRequest request, CancellationToken cancellationToken)

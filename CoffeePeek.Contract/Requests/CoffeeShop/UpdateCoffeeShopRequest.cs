@@ -5,7 +5,6 @@ using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.CoffeeShop;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CoffeePeek.Contract.Requests.CoffeeShop;
 

@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using CoffeePeek.Contract.Response;
-using CoffeePeek.Contract.Response.CoffeeShop;
 using CoffeePeek.Contract.Response.CoffeeShop.Review;
 using MediatR;
 
@@ -12,6 +11,7 @@ public class SendCoffeeShopToReviewRequest : IRequest<Response<SendCoffeeShopToR
     [Required]
     public string Name { get; set; }
     [Required]
+    [JsonPropertyName("fullAddress")]
     public string NotValidatedAddress { get; set; }
     [JsonIgnore]
     public int UserId { get; set; }

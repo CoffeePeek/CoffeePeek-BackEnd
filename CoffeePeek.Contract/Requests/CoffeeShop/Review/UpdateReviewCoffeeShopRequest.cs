@@ -15,6 +15,7 @@ public class UpdateReviewCoffeeShopRequest : IRequest<Response<UpdateReviewCoffe
     [JsonIgnore] public int UserId { get; set; }
     [FromBody] public int ReviewShopId { get; set; }
     [FromBody] public string? Description { get; set; }
+    [FromBody] public List<IFormFile>? Photos { get; set; }
     [FromBody] public AddressDto? Address { get; set; }
     [FromBody] public List<IFormFile>? ShopPhotos { get; set; }
     [FromBody] public List<ScheduleDto>? Schedules { get; set; }

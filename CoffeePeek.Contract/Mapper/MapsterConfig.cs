@@ -1,4 +1,5 @@
 using CoffeePeek.Contract.Requests.CoffeeShop.Review;
+using CoffeePeek.Data.Entities.Shop;
 using CoffeePeek.Data.Models.Shop;
 using Mapster;
 
