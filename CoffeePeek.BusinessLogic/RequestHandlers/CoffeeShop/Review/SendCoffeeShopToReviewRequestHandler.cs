@@ -1,17 +1,16 @@
 using CoffeePeek.Contract.Requests.CoffeeShop.Review;
 using CoffeePeek.Contract.Response;
-using CoffeePeek.Contract.Response.CoffeeShop;
+using CoffeePeek.Contract.Response.CoffeeShop.Review;
 using CoffeePeek.Data;
+using CoffeePeek.Data.Entities.Shop;
 using CoffeePeek.Data.Enums.Shop;
-using CoffeePeek.Data.Models.Address;
-using CoffeePeek.Data.Models.Shop;
 using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace CoffeePeek.BusinessLogic.RequestHandlers.CoffeeShop;
+namespace CoffeePeek.BusinessLogic.RequestHandlers.CoffeeShop.Review;
 
-public class SendCoffeeShopToReviewRequestHandler(
+internal class SendCoffeeShopToReviewRequestHandler(
     IMapper mapper, 
     IRepository<ReviewShop> reviewShopRepository)
     : IRequestHandler<SendCoffeeShopToReviewRequest, Response<SendCoffeeShopToReviewResponse>>
@@ -36,6 +35,6 @@ public class SendCoffeeShopToReviewRequestHandler(
         
         await reviewShopRepository.SaveChangesAsync(cancellationToken);
         
-        return Response.SuccessResponse<Response<SendCoffeeShopToReviewResponse>>("CoffeeShop added to review.");
+        return Response.SuccessResponse<Response<SendCoffeeShopToReviewResponse>>(null, "CoffeeShop added to review.");
     }
 }

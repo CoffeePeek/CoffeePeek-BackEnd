@@ -20,10 +20,6 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 
-builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(Assembly.Load("CoffeePeek.BusinessLogic"));
-});
 
 var dbOptions = builder.Services.AddValidateOptions<PostgresCpOptions>();
 builder.Services
@@ -41,6 +37,7 @@ builder.Services
     .AddValidators()
     .RegisterInfrastructure()
     .AddUserIdentity()
+    .ConfigureBusinessLogic()
     .AddControllers();
 
 var app = builder.Build();

@@ -1,4 +1,5 @@
 using CoffeePeek.Contract.Requests.CoffeeShop.Review;
+using CoffeePeek.Data.Entities.Shop;
 using CoffeePeek.Data.Models.Shop;
 using Mapster;
 
@@ -9,6 +10,6 @@ public class MapsterConfig : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<SendCoffeeShopToReviewRequest, ReviewShop>()
-            .Map(d => d.NotValidatedAddress, s => s.Address);
+            .Map(d => d.NotValidatedAddress, s => s.NotValidatedAddress);
     }
 }

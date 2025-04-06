@@ -3,13 +3,13 @@ using CoffeePeek.Contract.Requests.CoffeeShop.Review;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.CoffeeShop.Review;
 using CoffeePeek.Data;
-using CoffeePeek.Data.Models.Shop;
+using CoffeePeek.Data.Entities.Shop;
 using MapsterMapper;
 using MediatR;
 
-namespace CoffeePeek.BusinessLogic.RequestHandlers.CoffeeShop;
+namespace CoffeePeek.BusinessLogic.RequestHandlers.CoffeeShop.Review;
 
-public class UpdateReviewCoffeeShopRequestHandler(IRepository<ReviewShop> reviewShopRepository,
+internal class UpdateReviewCoffeeShopRequestHandler(IRepository<ReviewShop> reviewShopRepository,
     IMapper mapper) 
     : IRequestHandler<UpdateReviewCoffeeShopRequest, Response<UpdateReviewCoffeeShopResponse>>
 {
@@ -31,6 +31,8 @@ public class UpdateReviewCoffeeShopRequestHandler(IRepository<ReviewShop> review
         model.Update(requestEntity);
         
         await reviewShopRepository.SaveChangesAsync(cancellationToken);
+
+        
 
         return Response.SuccessResponse<Response<UpdateReviewCoffeeShopResponse>>();
     }

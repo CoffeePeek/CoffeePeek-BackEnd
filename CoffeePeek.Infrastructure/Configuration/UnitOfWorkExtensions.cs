@@ -1,5 +1,6 @@
 using CoffeePeek.Data;
 using CoffeePeek.Data.Databases;
+using CoffeePeek.Data.Entities.Shop;
 using CoffeePeek.Data.Entities.Users;
 using CoffeePeek.Data.Models.Address;
 using CoffeePeek.Data.Models.Shop;
