@@ -8,5 +8,5 @@ public class ShopContacts : BaseEntity
     public string PhoneNumber { get; set; }
     public string InstagramLink { get; set; }
     
-    public virtual Shop Shop { get; set; }
+    public virtual Entities.Shop.Shop Shop { get; set; }
 }

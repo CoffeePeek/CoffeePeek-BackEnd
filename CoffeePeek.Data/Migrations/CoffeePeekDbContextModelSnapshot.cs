@@ -90,6 +90,131 @@ namespace CoffeePeek.Data.Migrations
                     b.ToTable("Streets");
                 });
 
+            modelBuilder.Entity("CoffeePeek.Data.Entities.Shop.ReviewShop", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NotValidatedAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ReviewStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ShopContactId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ShopContactsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ShopId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("ShopContactsId");
+
+                    b.HasIndex("ShopId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReviewShops");
+                });
+
+            modelBuilder.Entity("CoffeePeek.Data.Entities.Shop.Shop", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ShopContactId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.ToTable("Shops");
+                });
+
+            modelBuilder.Entity("CoffeePeek.Data.Entities.Shop.ShopPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int?>("ReviewShopId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ShopId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReviewShopId");
+
+                    b.HasIndex("ShopId");
+
+                    b.HasIndex("Url");
+
+                    b.ToTable("ShopPhoto");
+                });
+
             modelBuilder.Entity("CoffeePeek.Data.Entities.Users.User", b =>
                 {
                     b.Property<int>("Id")
@@ -400,94 +525,6 @@ namespace CoffeePeek.Data.Migrations
                     b.ToTable("ScheduleExceptions");
                 });
 
-            modelBuilder.Entity("CoffeePeek.Data.Models.Shop.ReviewShop", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NotValidatedAddress")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ReviewStatus")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ShopContactId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ShopContactsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ShopId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
-
-                    b.HasIndex("ShopContactsId");
-
-                    b.HasIndex("ShopId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ReviewShops");
-                });
-
-            modelBuilder.Entity("CoffeePeek.Data.Models.Shop.Shop", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AddressId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("ShopContactId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
-
-                    b.ToTable("Shops");
-                });
-
             modelBuilder.Entity("CoffeePeek.Data.Models.Shop.ShopContacts", b =>
                 {
                     b.Property<int>("Id")
@@ -518,40 +555,6 @@ namespace CoffeePeek.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("ShopContacts");
-                });
-
-            modelBuilder.Entity("CoffeePeek.Data.Models.Shop.ShopPhoto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<int?>("ReviewShopId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ShopId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReviewShopId");
-
-                    b.HasIndex("ShopId");
-
-                    b.HasIndex("Url");
-
-                    b.ToTable("ShopPhoto");
                 });
 
             modelBuilder.Entity("CoffeePeek.Data.Models.Users.IdentityRoleEntity", b =>
@@ -750,6 +753,61 @@ namespace CoffeePeek.Data.Migrations
                     b.Navigation("City");
                 });
 
+            modelBuilder.Entity("CoffeePeek.Data.Entities.Shop.ReviewShop", b =>
+                {
+                    b.HasOne("CoffeePeek.Data.Entities.Address.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId");
+
+                    b.HasOne("CoffeePeek.Data.Models.Shop.ShopContacts", "ShopContacts")
+                        .WithMany()
+                        .HasForeignKey("ShopContactsId");
+
+                    b.HasOne("CoffeePeek.Data.Entities.Shop.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopId");
+
+                    b.HasOne("CoffeePeek.Data.Entities.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Shop");
+
+                    b.Navigation("ShopContacts");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CoffeePeek.Data.Entities.Shop.Shop", b =>
+                {
+                    b.HasOne("CoffeePeek.Data.Entities.Address.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("CoffeePeek.Data.Entities.Shop.ShopPhoto", b =>
+                {
+                    b.HasOne("CoffeePeek.Data.Entities.Shop.ReviewShop", null)
+                        .WithMany("ShopPhotos")
+                        .HasForeignKey("ReviewShopId");
+
+                    b.HasOne("CoffeePeek.Data.Entities.Shop.Shop", "Shop")
+                        .WithMany("ShopPhotos")
+                        .HasForeignKey("ShopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shop");
+                });
+
             modelBuilder.Entity("CoffeePeek.Data.Models.Address.City", b =>
                 {
                     b.HasOne("CoffeePeek.Data.Models.Address.Country", "Country")
@@ -763,7 +821,7 @@ namespace CoffeePeek.Data.Migrations
 
             modelBuilder.Entity("CoffeePeek.Data.Models.Review.Review", b =>
                 {
-                    b.HasOne("CoffeePeek.Data.Models.Shop.Shop", "Shop")
+                    b.HasOne("CoffeePeek.Data.Entities.Shop.Shop", "Shop")
                         .WithMany("Reviews")
                         .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -801,11 +859,11 @@ namespace CoffeePeek.Data.Migrations
 
             modelBuilder.Entity("CoffeePeek.Data.Models.Schedules.Schedule", b =>
                 {
-                    b.HasOne("CoffeePeek.Data.Models.Shop.ReviewShop", null)
+                    b.HasOne("CoffeePeek.Data.Entities.Shop.ReviewShop", null)
                         .WithMany("Schedules")
                         .HasForeignKey("ReviewShopId");
 
-                    b.HasOne("CoffeePeek.Data.Models.Shop.Shop", "Shop")
+                    b.HasOne("CoffeePeek.Data.Entities.Shop.Shop", "Shop")
                         .WithMany("Schedules")
                         .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -816,79 +874,24 @@ namespace CoffeePeek.Data.Migrations
 
             modelBuilder.Entity("CoffeePeek.Data.Models.Schedules.ScheduleException", b =>
                 {
-                    b.HasOne("CoffeePeek.Data.Models.Shop.ReviewShop", null)
+                    b.HasOne("CoffeePeek.Data.Entities.Shop.ReviewShop", null)
                         .WithMany("ScheduleExceptions")
                         .HasForeignKey("ReviewShopId");
 
-                    b.HasOne("CoffeePeek.Data.Models.Shop.Shop", "Shop")
+                    b.HasOne("CoffeePeek.Data.Entities.Shop.Shop", "Shop")
                         .WithMany("ScheduleExceptions")
                         .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Shop");
-                });
-
-            modelBuilder.Entity("CoffeePeek.Data.Models.Shop.ReviewShop", b =>
-                {
-                    b.HasOne("CoffeePeek.Data.Entities.Address.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
-
-                    b.HasOne("CoffeePeek.Data.Models.Shop.ShopContacts", "ShopContacts")
-                        .WithMany()
-                        .HasForeignKey("ShopContactsId");
-
-                    b.HasOne("CoffeePeek.Data.Models.Shop.Shop", "Shop")
-                        .WithMany()
-                        .HasForeignKey("ShopId");
-
-                    b.HasOne("CoffeePeek.Data.Entities.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Address");
-
-                    b.Navigation("Shop");
-
-                    b.Navigation("ShopContacts");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("CoffeePeek.Data.Models.Shop.Shop", b =>
-                {
-                    b.HasOne("CoffeePeek.Data.Entities.Address.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("CoffeePeek.Data.Models.Shop.ShopContacts", b =>
                 {
-                    b.HasOne("CoffeePeek.Data.Models.Shop.Shop", "Shop")
+                    b.HasOne("CoffeePeek.Data.Entities.Shop.Shop", "Shop")
                         .WithOne("ShopContacts")
                         .HasForeignKey("CoffeePeek.Data.Models.Shop.ShopContacts", "ShopId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Shop");
-                });
-
-            modelBuilder.Entity("CoffeePeek.Data.Models.Shop.ShopPhoto", b =>
-                {
-                    b.HasOne("CoffeePeek.Data.Models.Shop.ReviewShop", null)
-                        .WithMany("ShopPhotos")
-                        .HasForeignKey("ReviewShopId");
-
-                    b.HasOne("CoffeePeek.Data.Models.Shop.Shop", "Shop")
-                        .WithMany("ShopPhotos")
-                        .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -957,17 +960,7 @@ namespace CoffeePeek.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CoffeePeek.Data.Entities.Users.User", b =>
-                {
-                    b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("CoffeePeek.Data.Models.Review.Review", b =>
-                {
-                    b.Navigation("ReviewRatingCategories");
-                });
-
-            modelBuilder.Entity("CoffeePeek.Data.Models.Shop.ReviewShop", b =>
+            modelBuilder.Entity("CoffeePeek.Data.Entities.Shop.ReviewShop", b =>
                 {
                     b.Navigation("ScheduleExceptions");
 
@@ -976,7 +969,7 @@ namespace CoffeePeek.Data.Migrations
                     b.Navigation("ShopPhotos");
                 });
 
-            modelBuilder.Entity("CoffeePeek.Data.Models.Shop.Shop", b =>
+            modelBuilder.Entity("CoffeePeek.Data.Entities.Shop.Shop", b =>
                 {
                     b.Navigation("Reviews");
 
@@ -988,6 +981,16 @@ namespace CoffeePeek.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ShopPhotos");
+                });
+
+            modelBuilder.Entity("CoffeePeek.Data.Entities.Users.User", b =>
+                {
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("CoffeePeek.Data.Models.Review.Review", b =>
+                {
+                    b.Navigation("ReviewRatingCategories");
                 });
 #pragma warning restore 612, 618
         }

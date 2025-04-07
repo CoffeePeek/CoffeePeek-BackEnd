@@ -26,7 +26,7 @@ public class ReviewShop : BaseEntity
     public ShopStatus Status { get; set; }
     public virtual ShopContacts? ShopContacts { get; set; }
     public virtual User User { get; set; }
-    public virtual Models.Shop.Shop? Shop { get; set; }
+    public virtual Shop? Shop { get; set; }
     public ICollection<ShopPhoto>? ShopPhotos { get; set; }
     public ICollection<Schedule>? Schedules { get; set; }
     public ICollection<ScheduleException>? ScheduleExceptions { get; set; }

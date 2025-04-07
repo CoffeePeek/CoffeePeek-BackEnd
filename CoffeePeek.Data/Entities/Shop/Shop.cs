@@ -1,8 +1,8 @@
-using CoffeePeek.Data.Entities;
 using CoffeePeek.Data.Enums.Shop;
 using CoffeePeek.Data.Models.Schedules;
+using CoffeePeek.Data.Models.Shop;
 
-namespace CoffeePeek.Data.Models.Shop;
+namespace CoffeePeek.Data.Entities.Shop;
 
 public class Shop : BaseEntity
 {
@@ -11,7 +11,7 @@ public class Shop : BaseEntity
         ShopPhotos = new HashSet<ShopPhoto>();
         Schedules = new HashSet<Schedule>();
         ScheduleExceptions = new HashSet<ScheduleException>();
-        Reviews = new HashSet<Review.Review>();
+        Reviews = new HashSet<Models.Review.Review>();
     }
     
     public string Name { get; set; }
@@ -25,5 +25,5 @@ public class Shop : BaseEntity
     public ICollection<ShopPhoto> ShopPhotos { get; set; }
     public ICollection<Schedule> Schedules { get; set; }
     public ICollection<ScheduleException> ScheduleExceptions { get; set; }
-    public ICollection<Review.Review> Reviews { get; set; }
+    public ICollection<Models.Review.Review> Reviews { get; set; }
 }

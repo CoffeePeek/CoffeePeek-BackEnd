@@ -3,7 +3,6 @@ using CoffeePeek.Contract.Requests.CoffeeShop;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.CoffeeShop;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -38,12 +37,12 @@ public class CoffeeShopController(IMediator mediator) : Controller
     }
 
 
-    [HttpPost("send-to-review")]
-    [Authorize]
-    public Task<Response<UpdateCoffeeShopResponse>> UpdateCoffeeShop([FromForm] UpdateCoffeeShopRequest request)
-    {
-        return mediator.Send(request);
-    }
+    //[HttpPost("send-to-review")]
+    //[Authorize]
+    //public Task<Response<UpdateCoffeeShopResponse>> UpdateCoffeeShop([FromForm] UpdateCoffeeShopRequest request)
+    //{
+    //    return mediator.Send(request);
+    //}
     
     private void AddPaginationHeaders(GetCoffeeShopsResponse data)
     {
