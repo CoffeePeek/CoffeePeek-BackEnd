@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using CoffeePeek.Data.Entities.Users;
 using CoffeePeek.Data.Models.Users;
 using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using Microsoft.AspNetCore.Identity;

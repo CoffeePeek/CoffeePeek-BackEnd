@@ -2,9 +2,7 @@ using CoffeePeek.Contract.Constants;
 using CoffeePeek.Contract.Requests.CoffeeShop;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.CoffeeShop;
-using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -12,7 +10,7 @@ namespace CoffeePeek.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CoffeeShopController(IMediator mediator, IUserContextService userContextService) : Controller
+public class CoffeeShopController(IMediator mediator) : Controller
 {
     [HttpGet]
     [ProducesResponseType(typeof(Response<GetCoffeeShopsResponse>), StatusCodes.Status200OK)]
@@ -39,37 +37,13 @@ public class CoffeeShopController(IMediator mediator, IUserContextService userCo
     }
 
 
-
-    [HttpPost("send-to-review")]
-    [Authorize]
-    public async Task<Response<SendCoffeeShopToReviewResponse>> SendCoffeeShopToReview(
-        [FromBody] SendCoffeeShopToReviewRequest request)
-    {
-        if (!userContextService.TryGetUserId(out var userId))
-        {
-            return Contract.Response.Response.ErrorResponse<Response<SendCoffeeShopToReviewResponse>>(
-                "User ID not found or invalid.");
-        }
+    //[HttpPost("send-to-review")]
+    //[Authorize]
+    //public Task<Response<UpdateCoffeeShopResponse>> UpdateCoffeeShop([FromForm] UpdateCoffeeShopRequest request)
+    //{
+    //    return mediator.Send(request);
+    //}
     
-        request.UserId = userId;
-        return await mediator.Send(request);
-    }
-    
-    [HttpGet("in-review")]
-    [Authorize]
-    public async Task<Response<GetCoffeeShopsInReviewByIdResponse>> GetCoffeeShopsInReviewById()
-    {
-        if (!userContextService.TryGetUserId(out var userId))
-        {
-            return Contract.Response.Response.ErrorResponse<Response<GetCoffeeShopsInReviewByIdResponse>>(
-                "User ID not found or invalid.");
-        }
-
-        var request = new GetCoffeeShopsInReviewByIdRequest(userId);
-        
-        return await mediator.Send(request);
-    }
-
     private void AddPaginationHeaders(GetCoffeeShopsResponse data)
     {
         Response.Headers.TryAdd("X-Total-Count", data.TotalItems.ToString());

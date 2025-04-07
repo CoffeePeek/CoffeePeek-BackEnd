@@ -1,3 +1,4 @@
+using CoffeePeek.Data.Entities.Shop;
 using CoffeePeek.Data.Models.Shop;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,10 @@ internal static class ShopExtensions
         modelBuilder.Entity<ShopPhoto>()
             .HasIndex(x => x.Url);
         modelBuilder.Entity<ShopPhoto>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        
+        modelBuilder.Entity<ReviewShop>()
             .Property(b => b.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }

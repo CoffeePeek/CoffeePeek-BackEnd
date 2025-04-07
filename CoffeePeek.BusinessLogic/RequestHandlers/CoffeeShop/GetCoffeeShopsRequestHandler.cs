@@ -10,16 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoffeePeek.BusinessLogic.RequestHandlers.CoffeeShop;
 
-public class GetCoffeeShopsRequestHandler : IRequestHandler<GetCoffeeShopsRequest, Response<GetCoffeeShopsResponse>>
+internal class GetCoffeeShopsRequestHandler(IUnitOfWork<CoffeePeekDbContext> unitOfWork, IMapper mapper)
+    : IRequestHandler<GetCoffeeShopsRequest, Response<GetCoffeeShopsResponse>>
 {
-    private readonly CoffeePeekDbContext _unitOfWork;
-    private readonly IMapper _mapper;
-
-    public GetCoffeeShopsRequestHandler(IUnitOfWork<CoffeePeekDbContext> unitOfWork, IMapper mapper)
-    {
-        _unitOfWork = unitOfWork.DbContext;
-        _mapper = mapper;
-    }
+    private readonly CoffeePeekDbContext _unitOfWork = unitOfWork.DbContext;
 
     public async Task<Response<GetCoffeeShopsResponse>> Handle(GetCoffeeShopsRequest request, CancellationToken cancellationToken)
     {
@@ -48,7 +42,7 @@ public class GetCoffeeShopsRequestHandler : IRequestHandler<GetCoffeeShopsReques
             .Take(request.PageSize)
             .ToListAsync(cancellationToken);
 
-        var coffeeShopDtos = _mapper.Map<CoffeeShopDto[]>(coffeeShops);
+        var coffeeShopDtos = mapper.Map<CoffeeShopDto[]>(coffeeShops);
 
         var response = new GetCoffeeShopsResponse
         {

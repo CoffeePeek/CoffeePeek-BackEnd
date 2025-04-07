@@ -13,7 +13,6 @@ public static class ValidationExtensions
         services.AddTransient<IValidationStrategy<UserDto>, UserCreateValidationStrategy>();
         services.AddTransient<IUserContextService, UserContextService>();
         
-        
         return services;
     }
 }

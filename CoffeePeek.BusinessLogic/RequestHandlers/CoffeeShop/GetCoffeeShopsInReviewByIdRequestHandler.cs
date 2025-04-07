@@ -3,6 +3,7 @@ using CoffeePeek.Contract.Requests.CoffeeShop;
 using CoffeePeek.Contract.Response;
 using CoffeePeek.Contract.Response.CoffeeShop;
 using CoffeePeek.Data;
+using CoffeePeek.Data.Entities.Shop;
 using CoffeePeek.Data.Models.Shop;
 using MapsterMapper;
 using MediatR;
@@ -21,8 +22,10 @@ public class GetCoffeeShopsInReviewByIdRequestHandler(
         var reviewShops = await reviewShopRepository.FindBy(x => x.UserId == request.UserId)
             .ToArrayAsync(cancellationToken);
 
-        var result = mapper.Map<ReviewShopDto[]>(reviewShops);
+        var reviews = mapper.Map<ReviewShopDto[]>(reviewShops);
 
+        var result = new GetCoffeeShopsInReviewByIdResponse(reviews);
+        
         return Response.SuccessResponse<Response<GetCoffeeShopsInReviewByIdResponse>>(result);
     }
 }

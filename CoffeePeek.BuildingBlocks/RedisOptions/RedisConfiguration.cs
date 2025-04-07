@@ -1,5 +1,5 @@
 using System.Net;
-using CoffeePeek.BuildingBlocks.Options;
+using CoffeePeek.Shared.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 

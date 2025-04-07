@@ -1,16 +1,13 @@
-using System.Reflection;
 using CoffeePeek.Api.Middleware;
 using CoffeePeek.BuildingBlocks.AuthOptions;
 using CoffeePeek.BuildingBlocks.EfCore;
 using CoffeePeek.BuildingBlocks.Extensions;
-using CoffeePeek.BuildingBlocks.Options;
 using CoffeePeek.BuildingBlocks.RedisOptions;
 using CoffeePeek.BuildingBlocks.Sentry;
 using CoffeePeek.BusinessLogic.Configuration;
 using CoffeePeek.Data.Databases;
-using CoffeePeek.Data.Mapper;
 using CoffeePeek.Infrastructure.Configuration;
-using Mapster;
+using CoffeePeek.Shared.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,10 +18,6 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 
-builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(Assembly.Load("CoffeePeek.BusinessLogic"));
-});
 
 var dbOptions = builder.Services.AddValidateOptions<PostgresCpOptions>();
 builder.Services
@@ -32,21 +25,17 @@ builder.Services
     {
         opt.UseNpgsql(dbOptions.ConnectionString, b => b.MigrationsAssembly("CoffeePeek.Data"));
     })
-    .AddDbContext<ReviewCoffeePeekDbContext>(opt =>
-    {
-        opt.UseNpgsql(dbOptions.ReviewConnectionString, b => b.MigrationsAssembly("CoffeePeek.Data"));
-    })
     .ConfigureDbRepositories();
 builder.Services.RedisConfigurationOptions();
-builder.Services.AddMapster();
-MapsterConfig.MapperConfigure();
 
 builder.Services
+    .ConfigureMapster()
     .AddSwagger()
     .AddBearerAuthentication()
     .AddValidators()
     .RegisterInfrastructure()
     .AddUserIdentity()
+    .ConfigureBusinessLogic()
     .AddControllers();
 
 var app = builder.Build();

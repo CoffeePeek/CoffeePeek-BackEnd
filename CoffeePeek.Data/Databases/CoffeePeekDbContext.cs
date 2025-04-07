@@ -1,3 +1,6 @@
+using CoffeePeek.Data.Entities.Address;
+using CoffeePeek.Data.Entities.Shop;
+using CoffeePeek.Data.Entities.Users;
 using CoffeePeek.Data.Extensions;
 using CoffeePeek.Data.Models.Address;
 using CoffeePeek.Data.Models.Review;
@@ -26,6 +29,9 @@ public class CoffeePeekDbContext : IdentityDbContext<User, IdentityRoleEntity, i
     public virtual DbSet<Country> Countries { get; set; }
     public virtual DbSet<Street> Streets { get; set; }
     public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+    
+    public virtual DbSet<ReviewShop> ReviewShops { get; set; }
+    
     
     public CoffeePeekDbContext(DbContextOptions<CoffeePeekDbContext> options) : base(options)
     {
