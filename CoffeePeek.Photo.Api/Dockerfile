@@ -11,7 +11,6 @@ COPY ["CoffeePeek.Photo.Api/CoffeePeek.Photo.Api.csproj", "CoffeePeek.Photo.Api/
 COPY ["CoffeePeek.Photo.Infrastructure/CoffeePeek.Infrastructure.csproj", "CoffeePeek.Photo.Infrastructure/"]
 COPY ["CoffeePeek.Photo.Core/CoffeePeek.Core.csproj", "CoffeePeek.Photo.Core/"]
 COPY ["CoffeePeek.Photo.BuildingBlocks/CoffeePeek.BuildingBlocks.csproj", "CoffeePeek.Photo.BuildingBlocks/"]
-COPY ["CoffeePeek.Photo.Data/CoffeePeek.Photo.Data.csproj", "CoffeePeek.Photo.Data/"]
 RUN dotnet restore "CoffeePeek.Photo.Api/CoffeePeek.Photo.Api.csproj"
 COPY . .
 WORKDIR "/src/CoffeePeek.Photo.Api"
