@@ -12,4 +12,8 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\CoffeePeek.Photo.BuildingBlocks\CoffeePeek.Photo.BuildingBlocks.csproj" />
+    </ItemGroup>
+
 </Project>
