@@ -1,4 +1,4 @@
-﻿services:
+﻿ervices:
   coffeepeek.api:
     image: coffeepeek.api
     build:
