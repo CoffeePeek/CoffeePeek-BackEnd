@@ -15,5 +15,5 @@ public class Review : BaseEntity
     public ICollection<ReviewRatingCategory> ReviewRatingCategories { get; set; }
 
     public virtual User User { get; set; }
-    public virtual Shop.Shop Shop { get; set; }
+    public virtual Entities.Shop.Shop Shop { get; set; }
 }

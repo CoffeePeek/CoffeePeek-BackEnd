@@ -1,12 +1,9 @@
 using System.Text;
-using CoffeePeek.BuildingBlocks.Options;
 using CoffeePeek.Data.Databases;
 using CoffeePeek.Data.Entities.Users;
 using CoffeePeek.Data.Models.Users;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using CoffeePeek.Shared.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

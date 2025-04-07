@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
- 
-namespace CoffeePeek.BuildingBlocks.Options;
+
+namespace CoffeePeek.Shared.Extensions.Configuration;
 
 public static class ConfigurationExtensions
 {

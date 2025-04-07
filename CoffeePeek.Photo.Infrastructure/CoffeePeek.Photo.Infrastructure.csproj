@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ClassLibrary.SharedModels\ClassLibrary.SharedModels.csproj" />
+      <ProjectReference Include="..\CoffeePeek.Shared.Models\CoffeePeek.Shared.Models.csproj" />
       <ProjectReference Include="..\CoffeePeek.Photo.Core\CoffeePeek.Photo.Core.csproj" />
     </ItemGroup>
 

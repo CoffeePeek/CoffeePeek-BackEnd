@@ -11,5 +11,5 @@ public class Schedule : BaseEntity
     public TimeSpan? ClosingTime { get; set; }
     public bool IsOpen24Hours { get; set; }
     
-    public Shop.Shop Shop { get; set; }
+    public Entities.Shop.Shop Shop { get; set; }
 }

@@ -1,11 +1,11 @@
 using CoffeePeek.BuildingBlocks;
-using CoffeePeek.BuildingBlocks.Options;
 using CoffeePeek.Infrastructure.Cache;
 using CoffeePeek.Infrastructure.Cache.Interfaces;
 using CoffeePeek.Infrastructure.Consumers;
 using CoffeePeek.Infrastructure.Services;
 using CoffeePeek.Infrastructure.Services.Auth;
 using CoffeePeek.Infrastructure.Services.Auth.Interfaces;
+using CoffeePeek.Shared.Extensions.Configuration;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -41,7 +41,7 @@ public static class InfrastructureModule
 
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host(rabbitMqOptions.HostName, 28315, "/", h =>
+                cfg.Host(rabbitMqOptions.HostName, rabbitMqOptions.Port, "/", h =>
                 {
                     h.Username(rabbitMqOptions.Username);
                     h.Password(rabbitMqOptions.Password);

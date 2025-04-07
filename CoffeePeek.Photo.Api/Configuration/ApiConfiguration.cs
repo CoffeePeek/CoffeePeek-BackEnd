@@ -11,8 +11,6 @@ public static class ApiConfiguration
         services.AddSingleton(config);
 
         services.LoadInfrastructure();
-        services.LoadApplication();
-
         
         return services;
     }

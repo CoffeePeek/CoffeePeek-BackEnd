@@ -6,7 +6,7 @@ namespace CoffeePeek.Data.Models.Schedules;
 public class ScheduleException : BaseEntity
 {
     public int ShopId { get; set; }
-    public Shop.Shop Shop { get; set; }
+    public Entities.Shop.Shop Shop { get; set; }
 
     public DateTime ExceptionStartDate { get; set; }
     public DateTime ExceptionEndDate { get; set; }

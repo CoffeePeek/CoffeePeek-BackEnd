@@ -1,7 +1,4 @@
 using ClassLibrary.SharedModels;
-using CoffeePeek.Data;
-using CoffeePeek.Data.Entities.Shop;
-using CoffeePeek.Data.Repositories;
 using CoffeePeek.Data.Repositories.InReview;
 using MassTransit;
 

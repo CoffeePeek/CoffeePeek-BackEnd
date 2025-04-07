@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CoffeePeek.Photo.Infrastructure\CoffeePeek.Photo.Infrastructure.csproj" />
+      <ProjectReference Include="..\CoffeePeek.Shared.Extensions\CoffeePeek.Shared.Extensions.csproj" />
     </ItemGroup>
 
 </Project>

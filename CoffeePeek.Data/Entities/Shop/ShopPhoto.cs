@@ -9,5 +9,5 @@ public class ShopPhoto : BaseEntity
     /// </summary>
     public int UserId { get; set; }
     
-    public virtual Models.Shop.Shop Shop { get; set; }
+    public virtual Shop Shop { get; set; }
 }
