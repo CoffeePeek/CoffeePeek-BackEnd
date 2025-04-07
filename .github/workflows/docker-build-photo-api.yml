@@ -1,4 +1,4 @@
-name: Docker Build
+name: Docker Bild Photo.Api
 
 on:
   push:
@@ -16,8 +16,8 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
-      - name: Build coffeepeek.api Docker image
-        run: docker build -t winststreloc/coffeepeek.api:dev -f Dockerfile .
+      - name: Build coffeepeek.photo.api Docker image
+        run: docker build -t winststreloc/coffeepeek.photo.api:dev -f Dockerfile.photo .
 
-      - name: Push coffeepeek.api Docker image
-        run: docker push winststreloc/coffeepeek.api:dev
+      - name: Push coffeepeek.photo.api Docker image
+        run: docker push winststreloc/coffeepeek.photo.api:dev
