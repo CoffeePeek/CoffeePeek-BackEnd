@@ -1,5 +1,5 @@
-using ClassLibrary.SharedModels;
 using CoffeePeek.Photo.Core.Interfaces;
+using CoffeePeek.Shared.Models.PhotoUpload;
 using MassTransit;
 
 namespace CoffeePeek.Photo.Infrastructure.Consumers;

@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
-using ClassLibrary.SharedModels;
 using CoffeePeek.Contract.Requests.CoffeeShop.Review;
 using CoffeePeek.Contract.Response.CoffeeShop.Review;
+using CoffeePeek.Shared.Models.PhotoUpload;
 using MassTransit;
 using MediatR;
 using Microsoft.VisualBasic;
@@ -28,9 +28,9 @@ internal class UpdateReviewCoffeeShopBehavior(IPublishEndpoint publishEndpoint)
             
             await publishEndpoint.Publish<IPhotoUploadRequested>(new
             {
-                request.UserId,
-                request.ReviewShopId,
-                photosInBytes
+                UserId = request.UserId,
+                ShopId = request.ReviewShopId,
+                Photos = photosInBytes
             }, cancellationToken);
         }
         

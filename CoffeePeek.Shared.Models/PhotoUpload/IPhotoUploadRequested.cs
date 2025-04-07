@@ -1,4 +1,4 @@
-namespace ClassLibrary.SharedModels;
+namespace CoffeePeek.Shared.Models.PhotoUpload;
 
 public interface IPhotoUploadRequested
 {

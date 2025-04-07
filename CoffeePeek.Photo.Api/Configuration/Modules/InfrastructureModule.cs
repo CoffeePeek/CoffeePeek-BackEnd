@@ -32,7 +32,7 @@ internal static class InfrastructureModule
 
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host(rabbitMqOptions.HostName, 28315, "/", h =>
+                cfg.Host(rabbitMqOptions.HostName, rabbitMqOptions.Port, "/", h =>
                 {
                     h.Username(rabbitMqOptions.Username);
                     h.Password(rabbitMqOptions.Password);

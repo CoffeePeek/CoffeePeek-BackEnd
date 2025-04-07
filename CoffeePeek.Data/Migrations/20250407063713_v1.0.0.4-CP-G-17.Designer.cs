@@ -3,6 +3,7 @@ using System;
 using CoffeePeek.Data.Databases;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CoffeePeek.Data.Migrations
 {
     [DbContext(typeof(CoffeePeekDbContext))]
-    partial class CoffeePeekDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250407063713_v1.0.0.4-CP-G-17")]
+    partial class v1004CPG17
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

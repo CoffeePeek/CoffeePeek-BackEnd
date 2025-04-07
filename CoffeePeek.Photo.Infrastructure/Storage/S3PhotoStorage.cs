@@ -3,7 +3,6 @@ using Amazon.S3.Transfer;
 using CoffeePeek.Photo.Core.Interfaces;
 using CoffeePeek.Photo.Infrastructure.Constants;
 using CoffeePeek.Photo.Infrastructure.Options;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace CoffeePeek.Photo.Infrastructure.Storage;

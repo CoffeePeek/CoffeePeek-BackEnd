@@ -1,3 +1,5 @@
+using CoffeePeek.Data.Entities.Users;
+
 namespace CoffeePeek.Data.Entities.Shop;
 
 public class ShopPhoto : BaseEntity
@@ -10,4 +12,5 @@ public class ShopPhoto : BaseEntity
     public int UserId { get; set; }
     
     public virtual Shop Shop { get; set; }
+    public virtual User User { get; set; }
 }
