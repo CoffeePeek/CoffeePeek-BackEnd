@@ -17,7 +17,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
       - name: Build coffeepeek.photo.api Docker image
-        run: docker build -t winststreloc/coffeepeek.photo.api:latest .
+        run: docker build -t winststreloc/coffeepeek.photo.api:latest .\CoffeePeek.Photo.Api\
 
       - name: Push coffeepeek.photo.api Docker image
         run: docker push winststreloc/coffeepeek.photo.api:latest
