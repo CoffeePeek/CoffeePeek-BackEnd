@@ -2,11 +2,9 @@ using System.Text.Json.Serialization;
 using CoffeePeek.Contract.Dtos.Address;
 using CoffeePeek.Contract.Dtos.Schedule;
 using CoffeePeek.Contract.Response;
-using CoffeePeek.Contract.Response.CoffeeShop;
 using CoffeePeek.Contract.Response.CoffeeShop.Review;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CoffeePeek.Contract.Requests.CoffeeShop.Review;
 
