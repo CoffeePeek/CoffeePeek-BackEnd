@@ -19,6 +19,7 @@ public static class GetCoffeeShopHandler
         CancellationToken ct)
     {
         var cacheKey = CacheKey.Shop.Detail(query.Id);
+        var cacheTtl = ShopScheduleCachePolicy.UntilNextUtcMinute(DateTime.UtcNow);
 
         var shopDto = await redisService.GetAsync(cacheKey, async token =>
         {
@@ -33,7 +34,7 @@ public static class GetCoffeeShopHandler
                 ReviewCount = count, 
                 Reviews = mapper.Map<ReviewDto[]>(reviews)
             };
-        }, cacheKey.DefaultTtl, ct);
+        }, cacheTtl, ct);
 
         if (shopDto == null)
             return Response<GetCoffeeShopResponse>.Error("Shop not found");

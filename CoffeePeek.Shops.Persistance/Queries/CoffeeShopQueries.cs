@@ -118,8 +118,11 @@ public class CoffeeShopQueries(
         {
             var now = DateTime.UtcNow;
             var dow = now.DayOfWeek;
+            var previousDow = dow == DayOfWeek.Sunday ? DayOfWeek.Saturday : dow - 1;
             var timeOfDay = now.TimeOfDay;
 
+            // A UTC interval with CloseTime < OpenTime crosses midnight. Its first part belongs
+            // to the declared UTC day and its tail belongs to the following UTC day.
             if (request.IsOpen.Value)
             {
                 query = query.Where(s =>
@@ -127,7 +130,13 @@ public class CoffeeShopQueries(
                     s.Schedules.Any(sch =>
                         sch.DayOfWeek == dow &&
                         !sch.IsClosed &&
-                        sch.Intervals.Any(i => timeOfDay >= i.OpenTime && timeOfDay <= i.CloseTime)));
+                        sch.Intervals.Any(i =>
+                            (i.CloseTime >= i.OpenTime && timeOfDay >= i.OpenTime && timeOfDay <= i.CloseTime) ||
+                            (i.CloseTime < i.OpenTime && timeOfDay >= i.OpenTime))) ||
+                    s.Schedules.Any(sch =>
+                        sch.DayOfWeek == previousDow &&
+                        !sch.IsClosed &&
+                        sch.Intervals.Any(i => i.CloseTime < i.OpenTime && timeOfDay <= i.CloseTime)));
             }
             else
             {
@@ -136,7 +145,13 @@ public class CoffeeShopQueries(
                     !s.Schedules.Any(sch =>
                         sch.DayOfWeek == dow &&
                         !sch.IsClosed &&
-                        sch.Intervals.Any(i => timeOfDay >= i.OpenTime && timeOfDay <= i.CloseTime)));
+                        sch.Intervals.Any(i =>
+                            (i.CloseTime >= i.OpenTime && timeOfDay >= i.OpenTime && timeOfDay <= i.CloseTime) ||
+                            (i.CloseTime < i.OpenTime && timeOfDay >= i.OpenTime))) &&
+                    !s.Schedules.Any(sch =>
+                        sch.DayOfWeek == previousDow &&
+                        !sch.IsClosed &&
+                        sch.Intervals.Any(i => i.CloseTime < i.OpenTime && timeOfDay <= i.CloseTime)));
             }
         }
         
@@ -184,12 +199,12 @@ public class CoffeeShopQueries(
             .AsNoTracking()
             .AsSplitQuery()
             .Where(s => s.Id == id)
-            .Select(s => new { s.CreatedAtUtc, s.Schedules, CoffeeFocus = s.Type })
+            .Select(s => new { s.CreatedAtUtc, s.Status, s.Schedules, CoffeeFocus = s.Type })
             .FirstOrDefaultAsync(ct);
 
         var now = DateTime.UtcNow;
         var isNew = state is not null && state.CreatedAtUtc >= now.AddDays(-BusinessConstants.ItNewEntityInDays);
-        var isOpen = state is null || ComputeIsOpen(state.Schedules, now);
+        var isOpen = state is null || ComputeIsOpen(state.Status, state.Schedules, now);
 
         var catalog = await drinkRepository.GetActiveAsync(ct);
         var menu = await menuRepository.GetByShopIdAsync(id, ct);
@@ -242,7 +257,7 @@ public class CoffeeShopQueries(
             .AsNoTracking()
             .AsSplitQuery()
             .Where(s => ids.Contains(s.Id))
-            .Select(s => new { s.Id, s.CreatedAtUtc, s.Schedules, CoffeeFocus = s.Type })
+            .Select(s => new { s.Id, s.CreatedAtUtc, s.Status, s.Schedules, CoffeeFocus = s.Type })
             .ToListAsync(ct);
 
         var byId = states.ToDictionary(s => s.Id);
@@ -252,23 +267,19 @@ public class CoffeeShopQueries(
                 continue;
 
             item.IsNew = state.CreatedAtUtc >= newCutoff;
-            item.IsOpen = ComputeIsOpen(state.Schedules, now);
+            item.IsOpen = ComputeIsOpen(state.Status, state.Schedules, now);
             item.Type = (CoffeeShopType?)(int?)state.CoffeeFocus;
         }
     }
 
-    private static bool ComputeIsOpen(IEnumerable<ShopSchedule> schedules, DateTime utcNow)
+    private static bool ComputeIsOpen(
+        CoffeeShopStatus status,
+        IEnumerable<ShopSchedule> schedules,
+        DateTime utcNow)
     {
-        var list = schedules as IList<ShopSchedule> ?? schedules.ToList();
-        if (list.Count == 0)
-            return true;
-
-        var daySchedule = list.FirstOrDefault(s => s.DayOfWeek == utcNow.DayOfWeek);
-        if (daySchedule is null || daySchedule.IsClosed)
+        if (status != CoffeeShopStatus.Active)
             return false;
 
-        var currentTime = utcNow.TimeOfDay;
-        return daySchedule.Intervals.Any(interval =>
-            currentTime >= interval.OpenTime && currentTime <= interval.CloseTime);
+        return ShopScheduleEvaluator.IsOpenAtUtc(schedules, utcNow);
     }
 }
