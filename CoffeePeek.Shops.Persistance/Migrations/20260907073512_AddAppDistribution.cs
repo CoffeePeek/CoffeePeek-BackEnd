@@ -90,18 +90,12 @@ namespace CoffeePeek.Shops.Persistance.Migrations
                     table.PrimaryKey("PK_AppDownloadRedirectEvents", x => x.Id);
                 });
 
-            migrationBuilder.InsertData(
-                table: "AppDistributionSettings",
-                columns: new[]
-                {
-                    "Id", "AndroidGooglePlayEnabled", "AndroidApkEnabled", "IosAppStoreEnabled",
-                    "CreatedAtUtc", "UpdatedAtUtc"
-                },
-                values: new object[]
-                {
-                    AppDistributionSettings.SingletonId, false, false, false,
-                    DateTime.SpecifyKind(new DateTime(2026, 9, 7), DateTimeKind.Utc), null
-                });
+            migrationBuilder.Sql($"""
+                INSERT INTO "AppDistributionSettings"
+                    ("Id", "AndroidGooglePlayEnabled", "AndroidApkEnabled", "IosAppStoreEnabled", "CreatedAtUtc", "UpdatedAtUtc")
+                VALUES
+                    ('{AppDistributionSettings.SingletonId}', FALSE, FALSE, FALSE, TIMESTAMPTZ '2026-09-07 00:00:00+00', NULL);
+                """);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AndroidReleases_IsActive",
