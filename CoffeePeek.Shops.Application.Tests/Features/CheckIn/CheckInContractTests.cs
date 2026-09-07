@@ -20,6 +20,7 @@ namespace CoffeePeek.Shops.Application.Tests.Features.CheckIn;
 public class CheckInContractTests
 {
     private readonly Mock<IQueryCoffeeShopRepository> _shops = new();
+    private readonly Mock<IQueryCheckInRepository> _checkIns = new();
 
     private static CreateCheckInCommand Command(bool isPublic = false) => new(
         Guid.NewGuid(), isPublic, DateTime.UtcNow.AddDays(-2),
@@ -31,7 +32,11 @@ public class CheckInContractTests
     private CheckInValidationStrategy Validator()
     {
         _shops.Setup(s => s.Exists(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
-        return new CheckInValidationStrategy(_shops.Object);
+        _checkIns.Setup(c => c.ExistsSinceAsync(It.IsAny<Guid>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+        _checkIns.Setup(c => c.CountSinceAsync(It.IsAny<Guid>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(0);
+        return new CheckInValidationStrategy(_shops.Object, _checkIns.Object);
     }
 
     [Theory]
@@ -113,9 +118,6 @@ public class CheckInContractTests
     }
 
     [Theory]
-    [InlineData(null, "Long enough description")]
-    [InlineData("", "Long enough description")]
-    [InlineData("  ", "Long enough description")]
     [InlineData("ab", "Long enough description")]
     [InlineData(" a ", "Long enough description")]
     [InlineData("Title", null)]
@@ -123,21 +125,60 @@ public class CheckInContractTests
     [InlineData("Title", "         ")]
     [InlineData("Title", "123456789")]
     [InlineData("Title", "  short   ")]
-    public async Task PublicMissingOrShortText_IsValidationError(string header, string note)
+    public async Task PublicShortHeaderOrMissingNote_IsValidationError(string header, string note)
     {
         (await Validator().ValidateAsync(Command(true) with { Header = header, Note = note }, CancellationToken.None))
             .IsValid.Should().BeFalse();
     }
 
     [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("  ")]
+    public async Task PublicMissingHeader_IsValidWhenDescriptionExists(string header)
+    {
+        (await Validator().ValidateAsync(Command(true) with { Header = header }, CancellationToken.None))
+            .IsValid.Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData(0, 10, true)]
     [InlineData(3, 10, true)]
     [InlineData(100, 500, true)]
+    [InlineData(2, 10, false)]
     [InlineData(101, 10, false)]
     [InlineData(3, 501, false)]
     public async Task PublicTextLimits_MatchReviewDomain(int headerLength, int noteLength, bool valid)
     {
-        var command = Command(true) with { Header = new string('h', headerLength), Note = new string('n', noteLength) };
+        var header = headerLength == 0 ? null : new string('h', headerLength);
+        var command = Command(true) with { Header = header, Note = new string('n', noteLength) };
         (await Validator().ValidateAsync(command, CancellationToken.None)).IsValid.Should().Be(valid);
+    }
+
+    [Fact]
+    public async Task RecentCheckIn_IsValidationError()
+    {
+        var validator = Validator();
+        _checkIns.Setup(c => c.ExistsSinceAsync(It.IsAny<Guid>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        var result = await validator.ValidateAsync(Command(), CancellationToken.None);
+
+        result.IsValid.Should().BeFalse();
+        result.ErrorMessage.Should().Contain("3 hours");
+    }
+
+    [Fact]
+    public async Task FourthCheckInToday_IsValidationError()
+    {
+        var validator = Validator();
+        _checkIns.Setup(c => c.CountSinceAsync(It.IsAny<Guid>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(3);
+
+        var result = await validator.ValidateAsync(Command(), CancellationToken.None);
+
+        result.IsValid.Should().BeFalse();
+        result.ErrorMessage.Should().Contain("3 per day");
     }
 
     [Fact]

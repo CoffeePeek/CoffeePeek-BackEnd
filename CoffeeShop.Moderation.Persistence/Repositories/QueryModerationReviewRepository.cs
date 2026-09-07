@@ -38,7 +38,7 @@ public class QueryModerationReviewRepository(ModerationDbContext dbContext) : IQ
         {
             var term = ImportCandidateTextSearch.ToILikeContainsPattern(search);
             query = query.Where(r =>
-                EF.Functions.ILike(r.Header, term, "\\") ||
+                EF.Functions.ILike(r.Header ?? string.Empty, term, "\\") ||
                 EF.Functions.ILike(r.Comment, term, "\\") ||
                 EF.Functions.ILike(r.UserName, term, "\\"));
         }

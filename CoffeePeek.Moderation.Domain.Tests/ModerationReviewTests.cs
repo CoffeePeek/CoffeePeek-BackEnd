@@ -44,11 +44,11 @@ public class ModerationReviewTests
     }
 
     [Fact]
-    public void Create_WithBlankHeader_ThrowsDomainException()
+    public void Create_WithBlankHeader_StoresNullHeader()
     {
-        var act = () => CreateReview(ValidShopId, ValidModerationShopId, header: " ");
+        var review = CreateReview(ValidShopId, ValidModerationShopId, header: " ");
 
-        act.Should().Throw<DomainException>().WithMessage("*header*");
+        review.Header.Should().BeNull();
     }
 
     [Fact]

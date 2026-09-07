@@ -24,7 +24,9 @@ public class ModerationReviewConfiguration : IEntityTypeConfiguration<Moderation
         entity.HasIndex(mr => mr.ModerationStatus);
 
         entity.Property(mr => mr.UserName).HasMaxLength(30);
-        entity.Property(mr => mr.Header).HasMaxLength(BusinessConstants.MaxReviewHeaderLength);
+        entity.Property(mr => mr.Header)
+            .IsRequired(false)
+            .HasMaxLength(BusinessConstants.MaxReviewHeaderLength);
         entity.Property(mr => mr.Comment).HasMaxLength(BusinessConstants.MaxReviewCommentLength);
         entity.Property(mr => mr.RejectedReason).HasMaxLength(BusinessConstants.MaxRejectReasonCommentLength);
             

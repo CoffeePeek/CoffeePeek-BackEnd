@@ -56,7 +56,7 @@ public static class CreateCheckInHandler
                 command.CoffeeShopId,
                 command.UserId,
                 command.UserName,
-                header: command.Header!.Trim(),
+                header: string.IsNullOrWhiteSpace(command.Header) ? null : command.Header.Trim(),
                 comment: command.Note!.Trim(),
                 ratingPlace: command.Rating.Place,
                 ratingService: command.Rating.Service,

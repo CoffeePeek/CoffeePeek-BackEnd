@@ -18,6 +18,8 @@ public static class BusinessConstants
     
     public const int MaxCheckInNoteLength = 500;
     public const int MinPublicCheckinNoteLength = MinReviewHeaderLength;
+    public const int MinHoursBetweenUserCheckIns = 3;
+    public const int MaxUserCheckInsPerDay = 3;
     /// <summary>Allowed client/server clock drift when validating VisitedAt.</summary>
     public const int MaxVisitedAtClockSkewMinutes = 5;
     

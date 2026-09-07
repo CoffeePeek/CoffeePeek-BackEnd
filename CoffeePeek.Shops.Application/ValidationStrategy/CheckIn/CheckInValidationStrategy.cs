@@ -1,12 +1,14 @@
 using CoffeePeek.Shared.Validation;
 using CoffeePeek.Shops.Application.Features.CheckIn.CreateCheckIn;
 using CoffeePeek.Shops.Domain;
+using CoffeePeek.Shops.Domain.Aggregates.CheckInAggregate;
 using CoffeePeek.Shops.Domain.Aggregates.CoffeeShopAggregate;
 
 namespace CoffeePeek.Shops.Application.ValidationStrategy.CheckIn;
 
 public class CheckInValidationStrategy(
-    IQueryCoffeeShopRepository queryCoffeeShopRepository)
+    IQueryCoffeeShopRepository queryCoffeeShopRepository,
+    IQueryCheckInRepository queryCheckInRepository)
     : IAsyncValidationStrategy<CreateCheckInCommand>
 {
     public async Task<ValidationResult> ValidateAsync(CreateCheckInCommand command, CancellationToken ct)
@@ -18,6 +20,22 @@ public class CheckInValidationStrategy(
         if (!shopExists)
         {
             return ValidationResult.Invalid("Coffee shop not found");
+        }
+
+        var nowUtc = DateTime.UtcNow;
+        var lastAllowedUtc = nowUtc.AddHours(-BusinessConstants.MinHoursBetweenUserCheckIns);
+        if (await queryCheckInRepository.ExistsSinceAsync(command.UserId, lastAllowedUtc, ct))
+        {
+            return ValidationResult.Invalid(
+                $"Check-ins can be created once every {BusinessConstants.MinHoursBetweenUserCheckIns} hours");
+        }
+
+        var dayStartUtc = nowUtc.Date;
+        var todayCount = await queryCheckInRepository.CountSinceAsync(command.UserId, dayStartUtc, ct);
+        if (todayCount >= BusinessConstants.MaxUserCheckInsPerDay)
+        {
+            return ValidationResult.Invalid(
+                $"Check-ins are limited to {BusinessConstants.MaxUserCheckInsPerDay} per day");
         }
 
         return ValidationResult.Valid;
@@ -61,7 +79,7 @@ public class CheckInValidationStrategy(
 
         if (command.IsPublic)
         {
-            if (string.IsNullOrWhiteSpace(command.Header) ||
+            if (!string.IsNullOrWhiteSpace(command.Header) &&
                 command.Header.Trim().Length is < BusinessConstants.MinReviewHeaderLength or > BusinessConstants.MaxReviewHeaderLength)
                 return ValidationResult.Invalid("Header must be between 3 and 100 characters");
 

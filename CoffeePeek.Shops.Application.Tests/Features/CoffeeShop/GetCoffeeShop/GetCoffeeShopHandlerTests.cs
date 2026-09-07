@@ -83,6 +83,12 @@ public class GetCoffeeShopHandlerTests
         _checkInRepoMock
             .Setup(r => r.Exists(userId, shopId, _ct))
             .ReturnsAsync(false);
+        _checkInRepoMock
+            .Setup(r => r.GetByUserAndShopAsync(userId, shopId, 1, 10, _ct))
+            .ReturnsAsync([]);
+        _mapperMock
+            .Setup(m => m.Map<CheckInDto[]>(It.IsAny<object>()))
+            .Returns([]);
 
         var query = new GetCoffeeShopQuery(shopId, UserId: userId);
         var result = await GetCoffeeShopHandler.Handle(
@@ -96,6 +102,7 @@ public class GetCoffeeShopHandlerTests
 
         result.IsSuccess.Should().BeTrue();
         result.Data.ShopDto.IsVisited.Should().BeFalse();
+        result.Data.ShopDto.UserCheckIns.Should().BeEmpty();
     }
 
     [Fact]

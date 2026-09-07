@@ -16,7 +16,8 @@ public record CoffeeShopDetailsDto
 
     public decimal Rating { get; init; }
     public int ReviewCount { get; init; }
-    public ReviewDto[] Reviews { get; init; }
+    public ReviewDto[] Reviews { get; init; } = [];
+    public CheckInDto[] UserCheckIns { get; init; } = [];
 
 
     public bool IsVisited { get; init; }

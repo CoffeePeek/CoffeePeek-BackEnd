@@ -35,13 +35,13 @@ public class ReviewTests
     }
 
     [Fact]
-    public void Create_WithBlankHeader_ThrowsDomainException()
+    public void Create_WithBlankHeader_StoresNullHeader()
     {
         // Act
-        Action act = () => Review.Create(ValidShopId, ValidUserId, "user", " ", ValidComment, ValidRating, ValidRating, ValidRating);
+        var review = Review.Create(ValidShopId, ValidUserId, "user", " ", ValidComment, ValidRating, ValidRating, ValidRating);
 
         // Assert
-        act.Should().Throw<DomainException>();
+        review.Header.Should().BeNull();
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class ReviewTests
         // Assert
         review.CoffeeShopId.Should().Be(ValidShopId);
         review.UserId.Should().Be(ValidUserId);
-        review.Header.Should().NotBeNullOrEmpty();
+        review.Header.Should().Be(ValidHeader);
         review.Comment.Should().NotBeNullOrEmpty();
         review.Rating.Should().NotBeNull();
     }

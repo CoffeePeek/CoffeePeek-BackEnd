@@ -6,7 +6,7 @@ public record ModerationReviewDto
 {
     public Guid Id { get; init; }
 
-    public string Header { get; init; }
+    public string? Header { get; init; }
     public string Comment { get;init; }
     public Guid UserId { get; init; }
     public string UserName { get; init; }

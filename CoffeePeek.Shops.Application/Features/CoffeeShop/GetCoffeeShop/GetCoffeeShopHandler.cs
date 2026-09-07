@@ -44,7 +44,9 @@ public static class GetCoffeeShopHandler
             var userId = query.UserId.Value;
             shopDto = shopDto with
             {
-                IsVisited = await checkInRepository.Exists(userId, query.Id, ct)
+                IsVisited = await checkInRepository.Exists(userId, query.Id, ct),
+                UserCheckIns = mapper.Map<CheckInDto[]>(
+                    await checkInRepository.GetByUserAndShopAsync(userId, query.Id, 1, 10, ct))
             };
         }
 

@@ -13,6 +13,33 @@ public class QueryCheckInRepository(ShopsDbContext dbContext) : IQueryCheckInRep
         return _repository.AnyAsync(x => x.UserId == userId && x.ShopId == coffeeShopId, ct);
     }
 
+    public Task<bool> ExistsSinceAsync(Guid userId, DateTime sinceUtc, CancellationToken ct = default)
+    {
+        return _repository.AnyAsync(x => x.UserId == userId && x.CreatedAtUtc >= sinceUtc, ct);
+    }
+
+    public Task<int> CountSinceAsync(Guid userId, DateTime sinceUtc, CancellationToken ct = default)
+    {
+        return _repository.CountAsync(x => x.UserId == userId && x.CreatedAtUtc >= sinceUtc, ct);
+    }
+
+    public async Task<IReadOnlyList<CheckIn>> GetByUserAndShopAsync(
+        Guid userId,
+        Guid shopId,
+        int page = 1,
+        int pageSize = 10,
+        CancellationToken ct = default)
+    {
+        return await _repository
+            .AsNoTracking()
+            .Where(x => x.UserId == userId && x.ShopId == shopId)
+            .Include(x => x.ShopPhotos)
+            .OrderByDescending(x => x.CreatedAtUtc)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
+    }
+
     public void Add(CheckIn checkIn)
     {
         _repository.Add(checkIn);

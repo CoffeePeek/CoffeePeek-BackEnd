@@ -7,7 +7,7 @@ public record ReviewDto
     public Guid CoffeeShopId { get; init; }
     public string Username { get; init; }
 
-    public string Header { get; init; }
+    public string? Header { get; init; }
     public string Comment { get; init; }
 
     public RatingDto Rating { get; init; }

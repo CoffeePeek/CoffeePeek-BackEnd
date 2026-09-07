@@ -6,7 +6,7 @@ namespace CoffeePeek.Moderation.Domain.Aggregates.ModerationReviewAggregate;
 
 public partial class ModerationReview
 {
-    public static ModerationReview Create(Guid userId, Guid shopId, Guid? moderationShopId, string userName, string header, string comment,
+    public static ModerationReview Create(Guid userId, Guid shopId, Guid? moderationShopId, string userName, string? header, string comment,
         int ratingPlace, int ratingService, int ratingCoffee, List<PhotoMetadata> photos)
     {
         if (shopId == Guid.Empty)
@@ -15,10 +15,9 @@ public partial class ModerationReview
         if (userId == Guid.Empty)
             throw new DomainException($"{nameof(userId)} cannot be empty.");
 
-        if (string.IsNullOrWhiteSpace(header))
-            throw new DomainException("Review header is required.");
-
-        if (header.Length is < BusinessConstants.MinReviewHeaderLength or > BusinessConstants.MaxReviewHeaderLength)
+        var normalizedHeader = string.IsNullOrWhiteSpace(header) ? null : header.Trim();
+        if (normalizedHeader != null &&
+            normalizedHeader.Length is < BusinessConstants.MinReviewHeaderLength or > BusinessConstants.MaxReviewHeaderLength)
             throw new DomainException(
                 $"{nameof(header)} must be between {BusinessConstants.MinReviewHeaderLength} and {BusinessConstants.MaxReviewHeaderLength} characters.");
 
@@ -31,7 +30,7 @@ public partial class ModerationReview
         
         var rating = Rating.Create(ratingPlace,ratingService, ratingCoffee);
 
-        return new Aggregates.ModerationReviewAggregate.ModerationReview(userId, shopId, moderationShopId, userName, header, comment, rating, photos);
+        return new Aggregates.ModerationReviewAggregate.ModerationReview(userId, shopId, moderationShopId, userName, normalizedHeader, comment.Trim(), rating, photos);
     }
 
     public bool Approve(Guid moderatorId)
@@ -77,30 +76,36 @@ public partial class ModerationReview
         ModerationStatus = ModerationStatus.Pending;
     }
 
-    public void UpdateHeader(string header)
+    public void UpdateHeader(string? header)
     {
-        if (header == Header)
+        var normalizedHeader = string.IsNullOrWhiteSpace(header) ? null : header.Trim();
+        if (normalizedHeader == Header)
         {
             return;
         }
         
-        if (header.Length is < BusinessConstants.MinReviewHeaderLength or > BusinessConstants.MaxReviewHeaderLength)
+        if (normalizedHeader != null &&
+            normalizedHeader.Length is < BusinessConstants.MinReviewHeaderLength or > BusinessConstants.MaxReviewHeaderLength)
         {
             throw new DomainException(
                 $"{nameof(header)} header must be between {BusinessConstants.MinReviewHeaderLength} and {BusinessConstants.MaxReviewHeaderLength} characters.");
         }
         
-        Header = header;
+        Header = normalizedHeader;
     }
 
     public void UpdateComment(string comment)
     {
-        if (comment.Length is < BusinessConstants.MinReviewCommentLength or > BusinessConstants.MaxReviewCommentLength)
+        if (string.IsNullOrWhiteSpace(comment))
+            throw new DomainException("Review comment is required.");
+
+        var normalizedComment = comment.Trim();
+        if (normalizedComment.Length is < BusinessConstants.MinReviewCommentLength or > BusinessConstants.MaxReviewCommentLength)
         {
             throw new DomainException(
                 $"{nameof(comment)} must be between {BusinessConstants.MinReviewCommentLength} and {BusinessConstants.MaxReviewCommentLength} characters.");
         }
         
-        Comment = comment;
+        Comment = normalizedComment;
     }
 }

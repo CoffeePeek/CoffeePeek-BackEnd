@@ -8,7 +8,7 @@ namespace CoffeePeek.Moderation.Application.Features.Review.SendReviewToModerati
 public record SendReviewToModerationCommand(
     Guid ShopId,
     [MaxLength(BusinessConstants.MaxReviewHeaderLength)]
-    string Header,
+    string? Header,
     [MaxLength(BusinessConstants.MaxReviewCommentLength)]
     string Comment,
     RatingDto? Rating,

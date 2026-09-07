@@ -5,7 +5,7 @@ namespace CoffeePeek.Shops.Domain.Aggregates.ReviewAggregate;
 
 public sealed partial class Review
 {
-    public static Review Create(Guid shopId, Guid userId, string userName, string header,
+    public static Review Create(Guid shopId, Guid userId, string userName, string? header,
         string comment, int ratingPlace, int ratingService, int ratingCoffee)
     {
         if (shopId == Guid.Empty)
@@ -14,10 +14,9 @@ public sealed partial class Review
         if (userId == Guid.Empty)
             throw new DomainException($"{nameof(UserId)} cannot be empty.");
 
-        if (string.IsNullOrWhiteSpace(header))
-            throw new DomainException("Review header is required.");
-
-        if (header.Length is < BusinessConstants.MinReviewHeaderLength or > BusinessConstants.MaxReviewHeaderLength)
+        var normalizedHeader = string.IsNullOrWhiteSpace(header) ? null : header.Trim();
+        if (normalizedHeader != null &&
+            normalizedHeader.Length is < BusinessConstants.MinReviewHeaderLength or > BusinessConstants.MaxReviewHeaderLength)
             throw new DomainException(
                 $"{nameof(header)} must be between {BusinessConstants.MinReviewHeaderLength} and {BusinessConstants.MaxReviewHeaderLength} characters.");
 
@@ -30,7 +29,7 @@ public sealed partial class Review
 
         var rating = Rating.Create(ratingPlace, ratingService, ratingCoffee);
         
-        return new Review(shopId, userId, userName, header, comment, rating);
+        return new Review(shopId, userId, userName, normalizedHeader, comment.Trim(), rating);
     }
 
     public void UpdateUserName(string userName)
