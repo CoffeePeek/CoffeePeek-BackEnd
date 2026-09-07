@@ -95,4 +95,19 @@ public static class BusinessConstants
     public const decimal MenuExpensiveAbove = 9.00m;
 
     #endregion
+
+    #region AppDistribution
+
+    public const int MaxDownloadUrlLength = 2048;
+    public const int MaxAndroidReleaseVersionLength = 32;
+    public const int MaxAndroidReleaseFileNameLength = 255;
+    public const int Sha256HashLength = 64;
+    public const int MaxAuditActionLength = 100;
+    public const int MaxAuditValueLength = 4000;
+    public const int MaxRedirectChannelLength = 32;
+    public const int MaxRedirectUserAgentLength = 500;
+    public const int MaxRedirectRefererLength = 2048;
+    public const int MaxRedirectCountryLength = 2;
+
+    #endregion
 }

@@ -1,5 +1,6 @@
 using CoffeePeek.Shops.Domain;
 using CoffeePeek.Shops.Domain.Aggregates.BrewMethods;
+using CoffeePeek.Shops.Domain.Aggregates.AppDistributionAggregate;
 using CoffeePeek.Shops.Domain.Aggregates.CoffeeShopAggregate;
 using CoffeePeek.Shops.Domain.Aggregates.MenuAggregate;
 using CoffeePeek.Shops.Domain.Aggregates.ShopTagAggregate;
@@ -35,6 +36,10 @@ public class ShopsDbContext(DbContextOptions<ShopsDbContext> options) : DbContex
     public virtual DbSet<CoffeeShopTag> CoffeeShopTags { get; set; }
     public virtual DbSet<CoffeeDrinkDefinition> CoffeeDrinkDefinitions { get; set; }
     public virtual DbSet<ShopMenu> ShopMenus { get; set; }
+    public virtual DbSet<AppDistributionSettings> AppDistributionSettings { get; set; }
+    public virtual DbSet<AndroidRelease> AndroidReleases { get; set; }
+    public virtual DbSet<AppDistributionAuditLog> AppDistributionAuditLogs { get; set; }
+    public virtual DbSet<AppDownloadRedirectEvent> AppDownloadRedirectEvents { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,6 +53,10 @@ public class ShopsDbContext(DbContextOptions<ShopsDbContext> options) : DbContex
         modelBuilder.ApplyConfiguration(new ShopMenuConfiguration());
         modelBuilder.ApplyConfiguration(new ShopMenuItemConfiguration());
         modelBuilder.ApplyConfiguration(new ShopMenuPhotoConfiguration());
+        modelBuilder.ApplyConfiguration(new AppDistributionSettingsConfiguration());
+        modelBuilder.ApplyConfiguration(new AndroidReleaseConfiguration());
+        modelBuilder.ApplyConfiguration(new AppDistributionAuditLogConfiguration());
+        modelBuilder.ApplyConfiguration(new AppDownloadRedirectEventConfiguration());
         
         modelBuilder.Entity<Review>(entity =>
         {
