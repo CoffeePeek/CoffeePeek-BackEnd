@@ -61,10 +61,16 @@ public sealed class CoffeeShop : Entity<Guid>
     #region Domain Logic
 
     public bool IsNew => CreatedAtUtc > DateTime.UtcNow.AddDays(-BusinessConstants.ItNewEntityInDays);
-    public bool IsOpen => IsOpenAt(DateTime.UtcNow);
-    
-    private bool IsOpenAt(DateTime dateTime)
+    public bool IsOpen => IsOpenAtUtc(DateTime.UtcNow);
+
+    /// <summary>
+    /// Evaluates the shop against a weekly schedule expressed entirely in UTC.
+    /// </summary>
+    public bool IsOpenAtUtc(DateTime utcNow)
     {
+        if (utcNow.Kind != DateTimeKind.Utc)
+            throw new ArgumentException("Schedule must be evaluated with a UTC DateTime.", nameof(utcNow));
+
         switch (Status)
         {
             case CoffeeShopStatus.PermanentlyClosed:
@@ -74,22 +80,7 @@ public sealed class CoffeeShop : Entity<Guid>
                 break;
         }
 
-        if (Schedules.Count == 0)
-            return true;
-            
-        var daySchedule = Schedules.FirstOrDefault(s => s.DayOfWeek == dateTime.DayOfWeek);
-        
-        if (daySchedule == null)
-            return false;
-            
-        if (daySchedule.IsClosed)
-            return false;
-            
-        var currentTime = dateTime.TimeOfDay;
-        
-        return daySchedule.Intervals.Any(interval => 
-            currentTime >= interval.OpenTime && 
-            currentTime <= interval.CloseTime);
+        return ShopScheduleEvaluator.IsOpenAtUtc(Schedules, utcNow);
     }
     
     public void UpdateDetails(string name, string? description, PriceRange priceRange)

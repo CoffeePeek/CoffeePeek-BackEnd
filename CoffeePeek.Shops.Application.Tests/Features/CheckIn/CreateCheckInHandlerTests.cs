@@ -39,7 +39,8 @@ public class CreateCheckInHandlerTests
             VisitedAt: DateTime.UtcNow.AddHours(-1),
             Note: note,
             Photos: null,
-            Rating: rating)
+            Rating: rating ?? new RatingDto { Place = 5, Coffee = 5, Service = 5 },
+            Header: "Explicit review title")
         { UserId = Guid.NewGuid(), UserName = "testuser" };
 
     [Fact]

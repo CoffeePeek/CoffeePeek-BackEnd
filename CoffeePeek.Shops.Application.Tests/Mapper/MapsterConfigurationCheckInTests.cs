@@ -20,6 +20,8 @@ public class MapsterConfigurationCheckInTests
 
         var dto = checkIn.Adapt<CheckInDto>(config);
 
+        dto.VisitedAt.Should().Be(checkIn.VisitedAt);
+        dto.VisitedAt.Should().NotBe(checkIn.CreatedAtUtc);
         dto.CreatedAt.Should().Be(checkIn.CreatedAtUtc);
         dto.CreatedAt.Should().NotBe(default(DateTime));
     }

@@ -7,6 +7,7 @@ public class CheckInDto
     public Guid ShopId { get; set; }
     public string Note { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
+    public DateTime VisitedAt { get; set; }
     public Guid? ReviewId { get; set; }
     public string ShopName { get; set; } = string.Empty;
     public ShortPhotoMetadataDto[] Photos { get; set; } = [];

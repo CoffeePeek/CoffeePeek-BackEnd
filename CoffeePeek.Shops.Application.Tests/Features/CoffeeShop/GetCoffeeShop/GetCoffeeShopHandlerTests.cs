@@ -58,6 +58,11 @@ public class GetCoffeeShopHandlerTests
         _checkInRepoMock.Verify(
             r => r.Exists(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()),
             Times.Never);
+        _cacheMock.Verify(c => c.GetAsync(
+            It.IsAny<CacheKey>(),
+            It.IsAny<Func<CancellationToken, Task<CoffeeShopDetailsDto>>>(),
+            It.Is<TimeSpan?>(ttl => ttl > TimeSpan.Zero && ttl <= TimeSpan.FromMinutes(1)),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]

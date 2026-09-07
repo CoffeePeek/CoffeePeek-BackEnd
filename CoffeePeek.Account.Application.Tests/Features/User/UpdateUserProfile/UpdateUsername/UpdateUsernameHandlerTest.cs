@@ -263,6 +263,8 @@ public class UpdateUsernameHandlerTest
     [InlineData("user_name")]
     [InlineData("user.name123")]
     [InlineData("user_name_123")]
+    [InlineData("Кофеман")]
+    [InlineData("Иван_Иванов")]
     [InlineData("a12345678901234567890123456789")] // 30 chars
     public async Task Handle_WithValidUsernameFormats_ShouldUpdateSuccessfully(string validUsername)
     {

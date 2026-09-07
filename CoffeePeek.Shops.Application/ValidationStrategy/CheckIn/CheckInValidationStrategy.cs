@@ -11,13 +11,16 @@ public class CheckInValidationStrategy(
 {
     public async Task<ValidationResult> ValidateAsync(CreateCheckInCommand command, CancellationToken ct)
     {
+        var validation = Validate(command);
+        if (!validation.IsValid) return validation;
+
         var shopExists = await queryCoffeeShopRepository.Exists(command.CoffeeShopId, ct);
         if (!shopExists)
         {
             return ValidationResult.Invalid("Coffee shop not found");
         }
 
-        return Validate(command);
+        return ValidationResult.Valid;
     }
 
     private static ValidationResult Validate(CreateCheckInCommand command)
@@ -32,6 +35,9 @@ public class CheckInValidationStrategy(
             return ValidationResult.Invalid("ShopId is required");
         }
 
+        if (command.VisitedAt == default)
+            return ValidationResult.Invalid("VisitedAt is required");
+
         var visitedAtUtc = NormalizeToUtc(command.VisitedAt);
         var latestAllowedUtc = DateTime.UtcNow.AddMinutes(BusinessConstants.MaxVisitedAtClockSkewMinutes);
         if (visitedAtUtc > latestAllowedUtc)
@@ -39,38 +45,36 @@ public class CheckInValidationStrategy(
             return ValidationResult.Invalid("VisitedAt cannot be in the future");
         }
 
-        if (!string.IsNullOrWhiteSpace(command.Note) && command.Note.Length > BusinessConstants.MaxCheckInNoteLength)
+        if (command.Note != null && command.Note.Length > BusinessConstants.MaxCheckInNoteLength)
         {
             return ValidationResult.Invalid(
                 $"Note must not exceed {BusinessConstants.MaxCheckInNoteLength} characters");
         }
 
+        if (command.Rating == null)
+            return ValidationResult.Invalid("Rating is required");
+
+        if (command.Rating.Coffee < BusinessConstants.MinReviewRate || command.Rating.Coffee > BusinessConstants.MaxReviewRate
+            || command.Rating.Place < BusinessConstants.MinReviewRate || command.Rating.Place > BusinessConstants.MaxReviewRate
+            || command.Rating.Service < BusinessConstants.MinReviewRate || command.Rating.Service > BusinessConstants.MaxReviewRate)
+            return ValidationResult.Invalid($"Rating must be between {BusinessConstants.MinReviewRate} and {BusinessConstants.MaxReviewRate}");
+
         if (command.IsPublic)
         {
-            if (command.Rating == null)
-            {
-                return ValidationResult.Invalid("Rating is required when checking in publicly");
-            }
+            if (string.IsNullOrWhiteSpace(command.Header) ||
+                command.Header.Trim().Length is < BusinessConstants.MinReviewHeaderLength or > BusinessConstants.MaxReviewHeaderLength)
+                return ValidationResult.Invalid("Header must be between 3 and 100 characters");
 
-            if (command.Rating.Coffee < BusinessConstants.MinReviewRate || command.Rating.Coffee > BusinessConstants.MaxReviewRate
-                                          || command.Rating.Place < BusinessConstants.MinReviewRate
-                                          || command.Rating.Place > BusinessConstants.MaxReviewRate
-                                          || command.Rating.Service < BusinessConstants.MinReviewRate
-                                          || command.Rating.Service > BusinessConstants.MaxReviewRate)
-            {
-                return ValidationResult.Invalid($"Rating must be between {BusinessConstants.MinReviewRate} and {BusinessConstants.MaxReviewRate}");
-            }
-
-            if (command.Note == null)
+            if (string.IsNullOrWhiteSpace(command.Note))
             {
                 return ValidationResult.Invalid("Note is required when checking in publicly");
             }
 
-            if (command.Note.Length is > BusinessConstants.MaxCheckInNoteLength
-                or < BusinessConstants.MinPublicCheckinNoteLength)
+            if (command.Note.Trim().Length is > BusinessConstants.MaxCheckInNoteLength
+                or < BusinessConstants.MinReviewCommentLength)
             {
                 return ValidationResult.Invalid(
-                    $"Note must be between {BusinessConstants.MinPublicCheckinNoteLength} and {BusinessConstants.MaxCheckInNoteLength} characters");
+                    $"Note must be between {BusinessConstants.MinReviewCommentLength} and {BusinessConstants.MaxCheckInNoteLength} characters");
             }
         }
 
