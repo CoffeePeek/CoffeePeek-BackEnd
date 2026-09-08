@@ -5,6 +5,23 @@ namespace CoffeePeek.Gateway.Tests;
 
 public class ReverseProxyRouteConfigurationTests
 {
+    [Fact]
+    public void AppReleaseAutomationRoute_IsLimitedToReleaseListAndCreate()
+    {
+        using var document = LoadGatewayAppsettings();
+        var routes = document.RootElement.GetProperty("ReverseProxy").GetProperty("Routes");
+
+        routes.TryGetProperty("shops-admin-v1-app-downloads-automation-route", out var route)
+            .Should().BeTrue();
+        route.GetProperty("ClusterId").GetString().Should().Be("shops-cluster");
+        route.GetProperty("AuthorizationPolicy").GetString().Should().Be("AppReleaseAutomationPolicy");
+        route.GetProperty("Match").GetProperty("Path").GetString()
+            .Should().Be("/api/admin/v1/app-downloads/android/releases");
+        route.GetProperty("Match").GetProperty("Methods").EnumerateArray()
+            .Select(method => method.GetString())
+            .Should().Equal("GET", "POST");
+    }
+
     [Theory]
     [InlineData("shops-admin-cities-route", "/api/admin/cities/{**remainder}")]
     [InlineData("shops-admin-equipments-route", "/api/admin/equipments/{**remainder}")]

@@ -35,7 +35,7 @@ x-jwt-env: &jwt-env
   JWTOptions__Issuer: CoffeePeek.WEB
 
 x-gateway-auth-env: &gateway-auth-env
-  GatewayAuth__SecretKey: ${GATEWAY_AUTH_SECRET}
+      GatewayAuth__SecretKey: ${GATEWAY_AUTH_SECRET}
 
 x-media-public-env: &media-public-env
   MediaPublicUrlOptions__PublicEndpoint: ${MEDIA_PUBLIC_URL:-}
@@ -268,6 +268,8 @@ services:
       ReverseProxy__Clusters__shops-cluster__Destinations__destination1__Address: http://shops:8080
       ReverseProxy__Clusters__moderation-cluster__Destinations__destination1__Address: http://moderation:8080
       ReverseProxy__Clusters__media-cluster__Destinations__destination1__Address: http://media:8080
+      AppReleaseAutomation__Token: ${APP_RELEASE_AUTOMATION_TOKEN:-}
+      AppReleaseAutomation__ActorUserId: 52a6ea58-11c7-4a9f-b7d9-77bf842169d5
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
       Sentry__Dsn: ${SENTRY_DSN_GATEWAY:-}
     mem_limit: 1024m
@@ -285,6 +287,7 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - /var/www/coffeepeek-downloads:/srv/downloads:ro
       - caddy_data:/data
       - caddy_config:/config
     environment:

@@ -27,6 +27,17 @@ public class DeployReverseProxyConfigurationTests
     }
 
     [Fact]
+    public void ProductionCaddy_ServesAndroidDownloadsFromReadOnlyHostMount()
+    {
+        var caddyfile = File.ReadAllText(GetDeployPath("Caddyfile"));
+        var compose = File.ReadAllText(GetDeployPath("docker-compose.yml"));
+
+        caddyfile.Should().Contain("handle_path /downloads/*");
+        caddyfile.Should().Contain("root * /srv/downloads");
+        compose.Should().Contain("/var/www/coffeepeek-downloads:/srv/downloads:ro");
+    }
+
+    [Fact]
     public void UpdateScript_WaitsForBackendServicesOnContainerPort()
     {
         var updateScript = File.ReadAllText(GetDeployPath("scripts", "update.sh"));
