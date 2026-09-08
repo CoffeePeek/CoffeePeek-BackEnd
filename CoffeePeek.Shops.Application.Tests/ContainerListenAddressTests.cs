@@ -7,23 +7,23 @@ namespace CoffeePeek.Shops.Application.Tests;
 public class ContainerListenAddressTests
 {
     [Fact]
-    public void ShopsDockerfile_BindsAllInterfacesOnPort80()
+    public void ShopsDockerfile_BindsAllInterfacesOnPort8080()
     {
         var dockerfile = File.ReadAllText(Path.Combine(FindRepoRoot(), "CoffeePeek.ShopsService", "ShopsService.Dockerfile"));
 
-        dockerfile.Should().Contain("ASPNETCORE_URLS=http://+:80");
-        dockerfile.Should().NotContain("http://[::]:80");
-        dockerfile.Should().Contain("ASPNETCORE_HTTP_PORTS=80");
+        dockerfile.Should().Contain("ASPNETCORE_URLS=http://+:8080");
+        dockerfile.Should().NotContain("http://[::]:8080");
+        dockerfile.Should().Contain("ASPNETCORE_HTTP_PORTS=8080");
     }
 
     [Fact]
-    public void ProductionCompose_ForcesPort80AndExplicitShopsAddress()
+    public void ProductionCompose_ForcesPort8080AndExplicitShopsAddress()
     {
         var compose = File.ReadAllText(Path.Combine(FindRepoRoot(), "deploy", "docker-compose.yml"));
 
-        compose.Should().Contain("ASPNETCORE_URLS: http://+:80");
-        compose.Should().Contain("ASPNETCORE_HTTP_PORTS: \"80\"");
-        compose.Should().Contain("http://shops:80");
+        compose.Should().Contain("ASPNETCORE_URLS: http://+:8080");
+        compose.Should().Contain("ASPNETCORE_HTTP_PORTS: \"8080\"");
+        compose.Should().Contain("http://shops:8080");
     }
 
     [Fact]
