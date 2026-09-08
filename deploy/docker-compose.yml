@@ -9,6 +9,14 @@ x-logging: &default-logging
     max-size: "10m"
     max-file: "3"
 
+# A running process is not necessarily listening yet (Wolverine initializes first).
+x-app-healthcheck: &app-healthcheck
+  test: ["CMD", "curl", "--fail", "--silent", "--show-error", "--max-time", "3", "http://127.0.0.1:8080/health"]
+  interval: 5s
+  timeout: 4s
+  retries: 6
+  start_period: 120s
+
 x-dotnet-common: &dotnet-common
   ASPNETCORE_ENVIRONMENT: Production
   ASPNETCORE_URLS: http://+:8080
@@ -137,6 +145,7 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
 
   account:
+    healthcheck: *app-healthcheck
     image: ${DOCKER_IMAGE_PREFIX}/coffeepeek.accountservice:${IMAGE_TAG}
     build:
       context: ..
@@ -170,6 +179,7 @@ services:
     memswap_limit: 1024m
 
   shops:
+    healthcheck: *app-healthcheck
     image: ${DOCKER_IMAGE_PREFIX}/coffeepeek.shopsservice:${IMAGE_TAG}
     build:
       context: ..
@@ -196,6 +206,7 @@ services:
     memswap_limit: 1024m
 
   moderation:
+    healthcheck: *app-healthcheck
     image: ${DOCKER_IMAGE_PREFIX}/coffeepeek.moderationservice:${IMAGE_TAG}
     build:
       context: ..
@@ -223,6 +234,7 @@ services:
     memswap_limit: 1536m
 
   media:
+    healthcheck: *app-healthcheck
     image: ${DOCKER_IMAGE_PREFIX}/coffeepeek.mediaservice:${IMAGE_TAG}
     build:
       context: ..
@@ -249,6 +261,7 @@ services:
     memswap_limit: 512m
 
   gateway:
+    healthcheck: *app-healthcheck
     image: ${DOCKER_IMAGE_PREFIX}/gateway:${IMAGE_TAG}
     build:
       context: ..
@@ -256,10 +269,14 @@ services:
     restart: unless-stopped
     logging: *default-logging
     depends_on:
-      - account
-      - shops
-      - moderation
-      - media
+      account:
+        condition: service_healthy
+      shops:
+        condition: service_healthy
+      moderation:
+        condition: service_healthy
+      media:
+        condition: service_healthy
     ports:
       - "127.0.0.1:${GATEWAY_PORT:-8080}:8080"
     environment:
@@ -281,7 +298,8 @@ services:
     restart: unless-stopped
     logging: *default-logging
     depends_on:
-      - gateway
+      gateway:
+        condition: service_healthy
     ports:
       - "80:80"
       - "443:443"

@@ -27,6 +27,7 @@ services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 services.AddProblemDetails();
+services.AddHealthChecks();
 services.AddExceptionHandler<GlobalExceptionHandler>();
 services.AddHeaderUserContext(builder.Configuration);
 
@@ -76,6 +77,7 @@ var app = builder.Build();
 app.MapOpenApi();
 
 app.UseExceptionHandler();
+app.MapHealthChecks("/health");
 app.MapControllers();
 
 app.Run();
