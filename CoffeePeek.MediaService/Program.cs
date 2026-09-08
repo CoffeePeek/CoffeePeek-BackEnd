@@ -15,6 +15,7 @@ using CoffeePeek.Shared.Persistence.Extensions;
 using CoffeePeek.Shared.Web;
 using CoffeePeek.Shared.Web.Handlers;
 using CoffeePeek.Shared.Web.Sentry;
+using JasperFx;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -70,7 +71,10 @@ services.AddScoped<IStorageService, MinIOStorageService>();
 
 
 var handlersAssembly = typeof(ConfirmPhotoHandler).Assembly;
-builder.AddWolverine([handlersAssembly]);
+builder.AddWolverine(
+    typeof(Program).Assembly,
+    [handlersAssembly],
+    [typeof(MediaDbContext)]);
 
 var app = builder.Build();
 
@@ -80,4 +84,4 @@ app.UseExceptionHandler();
 app.MapHealthChecks("/health");
 app.MapControllers();
 
-app.Run();
+return await app.RunJasperFxCommands(args);

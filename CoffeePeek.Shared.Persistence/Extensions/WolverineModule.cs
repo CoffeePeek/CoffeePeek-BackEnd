@@ -1,9 +1,11 @@
 using System.Reflection;
 using CoffeePeek.Shared.Kernel.Exceptions;
 using CoffeePeek.Shared.Kernel.Extentions;
+using JasperFx;
 using JasperFx.CodeGeneration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Wolverine;
 using Wolverine.EntityFrameworkCore;
 using Wolverine.ErrorHandling;
@@ -17,14 +19,36 @@ public static class WolverineModule
 {
     extension(WebApplicationBuilder builder)
     {
-        public void AddWolverine(Assembly[] handlerAssembly)
+        public void AddWolverine(
+            Assembly applicationAssembly,
+            Assembly[] handlerAssemblies,
+            Type[] serviceLocationTypes)
         {
             var rabbitMqOptions = builder.Services.AddValidateOptions<RabbitMqOptions>();
             var postgresCpOptions = builder.Services.AddValidateOptions<PostgresCpOptions>();
+
+            if (!builder.Environment.IsDevelopment())
+            {
+                builder.Services.CritterStackDefaults(options =>
+                {
+                    options.Production.AssertAllPreGeneratedTypesExist = true;
+                });
+            }
             
             builder.Host.UseWolverine(opts =>
             {
-                opts.CodeGeneration.TypeLoadMode = TypeLoadMode.Auto;
+                // Use the service host assembly for generated handler adapters. Without this
+                // Wolverine infers this shared project as the application assembly and cannot
+                // find the code generated into the individual service projects.
+                opts.ApplicationAssembly = applicationAssembly;
+                opts.CodeGeneration.TypeLoadMode = builder.Environment.IsDevelopment()
+                    ? TypeLoadMode.Auto
+                    : TypeLoadMode.Static;
+
+                foreach (var serviceType in serviceLocationTypes)
+                {
+                    opts.CodeGeneration.AlwaysUseServiceLocationFor(serviceType);
+                }
 
                 opts.UseRabbitMq(o =>
                     {
@@ -56,7 +80,7 @@ public static class WolverineModule
                 opts.Durability.Mode = DurabilityMode.Solo;
 
                 opts.UseEntityFrameworkCoreTransactions();
-                foreach (var assembly in handlerAssembly)
+                foreach (var assembly in handlerAssemblies)
                 {
                     opts.Discovery.IncludeAssembly(assembly);
                 }

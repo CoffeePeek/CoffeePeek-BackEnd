@@ -21,7 +21,10 @@ public static class InfrastructureExtensions
             .ConfigureWebhost();
         var applicationAssembly = typeof(SendCoffeeShopToModerationHandler).Assembly;
         var infrastructureAssembly = typeof(CheckInCreatedHandler).Assembly;
-        builder.AddWolverine([applicationAssembly, infrastructureAssembly]);
+        builder.AddWolverine(
+            typeof(InfrastructureExtensions).Assembly,
+            [applicationAssembly, infrastructureAssembly],
+            [typeof(ModerationDbContext)]);
         
         builder.Services
             .AddApplication()

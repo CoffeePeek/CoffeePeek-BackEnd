@@ -23,7 +23,10 @@ public static class InfrastructureExtensions
         
         var applicationAssembly = typeof(RegisterUserHandler).Assembly;
         var infrastructureAssembly = typeof(CheckinCreatedHandler).Assembly;
-        builder.AddWolverine([applicationAssembly, infrastructureAssembly]);
+        builder.AddWolverine(
+            typeof(InfrastructureExtensions).Assembly,
+            [applicationAssembly, infrastructureAssembly],
+            [typeof(AccountDbContext)]);
         
         builder.Services
             .AddApplication()
