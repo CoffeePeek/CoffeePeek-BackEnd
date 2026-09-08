@@ -54,7 +54,7 @@ public sealed class ResilientForwarderHttpClientFactoryTests
             if (Attempts <= failuresBeforeSuccess)
             {
                 return Task.FromException<HttpResponseMessage>(new HttpRequestException(
-                    "Connection refused (shops:80)",
+                    "Connection refused (shops:8080)",
                     new SocketException((int)SocketError.ConnectionRefused)));
             }
 

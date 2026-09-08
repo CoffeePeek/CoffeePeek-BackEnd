@@ -3,7 +3,7 @@
 }
 
 {$DOMAIN} {
-	reverse_proxy gateway:80
+	reverse_proxy gateway:8080
 }
 
 {$MEDIA_DOMAIN} {

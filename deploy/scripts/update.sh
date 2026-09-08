@@ -29,7 +29,7 @@ wait_for_backend() {
   echo "==> Waiting for ${service} (${path})..."
   for ((i = 1; i <= attempts; i++)); do
     if docker run --rm --network coffeepeek_default curlimages/curl:8.10.1 \
-      -sf "http://${service}${path}" >/dev/null 2>&1; then
+      -sf "http://${service}:8080${path}" >/dev/null 2>&1; then
       echo "${service} is ready"
       return 0
     fi
