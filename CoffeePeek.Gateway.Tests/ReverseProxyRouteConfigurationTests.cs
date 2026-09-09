@@ -66,6 +66,29 @@ public class ReverseProxyRouteConfigurationTests
         }
     }
 
+    [Fact]
+    public void ModerationRoastersRoute_TargetsModerationClusterWithSubmissionRateLimit()
+    {
+        using var document = LoadGatewayAppsettings();
+        var routes = document.RootElement.GetProperty("ReverseProxy").GetProperty("Routes");
+
+        routes.TryGetProperty("moderation-ModerationRoasters-route", out var route).Should().BeTrue();
+        route.GetProperty("ClusterId").GetString().Should().Be("moderation-cluster");
+        route.GetProperty("RateLimiterPolicy").GetString().Should().Be("moderation-submission");
+        route.GetProperty("Match").GetProperty("Path").GetString().Should().Be("/api/ModerationRoasters/{**remainder}");
+    }
+
+    [Fact]
+    public void PublicRoastersRoute_TargetsShopsCluster()
+    {
+        using var document = LoadGatewayAppsettings();
+        var routes = document.RootElement.GetProperty("ReverseProxy").GetProperty("Routes");
+
+        routes.TryGetProperty("shops-Roasters-route", out var route).Should().BeTrue();
+        route.GetProperty("ClusterId").GetString().Should().Be("shops-cluster");
+        route.GetProperty("Match").GetProperty("Path").GetString().Should().Be("/api/roasters/{**remainder}");
+    }
+
     private static JsonDocument LoadGatewayAppsettings()
     {
         var path = Path.GetFullPath(Path.Combine(

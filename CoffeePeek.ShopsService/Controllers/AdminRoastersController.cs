@@ -1,4 +1,6 @@
+using CoffeePeek.Contract.Dtos;
 using CoffeePeek.Contract.Dtos.Shop;
+using CoffeePeek.Shared.Auth;
 using CoffeePeek.Shared.Auth.Constants;
 using CoffeePeek.Shared.Kernel.Response;
 using CoffeePeek.Shops.Application.Features.Admin.Catalogs.Roasters;
@@ -14,7 +16,7 @@ namespace CoffeePeek.ShopsService.Controllers;
 [Authorize(Policy = RoleConsts.Moderator)]
 [Tags("Admin")]
 [ProducesErrorResponseType(typeof(ErrorResponse))]
-public class AdminRoastersController(IMessageBus bus) : ControllerBase
+public class AdminRoastersController(IMessageBus bus, IUserContext userContext) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType<Response<RoasterDto>>(StatusCodes.Status200OK)]
@@ -23,7 +25,8 @@ public class AdminRoastersController(IMessageBus bus) : ControllerBase
         [FromBody] CreateRoasterCommand command,
         CancellationToken ct)
     {
-        var response = await bus.InvokeAsync<Response<RoasterDto>>(command, ct);
+        var commandWithActor = command with { ActorUserId = userContext.GetUserIdOrThrow() };
+        var response = await bus.InvokeAsync<Response<RoasterDto>>(commandWithActor, ct);
         if (response.IsSuccess)
             return Ok(response);
 
@@ -42,7 +45,18 @@ public class AdminRoastersController(IMessageBus bus) : ControllerBase
         [FromBody] UpdateRoasterRequest request,
         CancellationToken ct)
     {
-        var command = new UpdateRoasterCommand(id, request.Name);
+        var command = new UpdateRoasterCommand(
+            id,
+            request.Name,
+            request.About,
+            request.CityId,
+            request.Address,
+            request.Latitude,
+            request.Longitude,
+            request.InstagramLink,
+            request.SiteLink,
+            request.Photos,
+            userContext.GetUserIdOrThrow());
         var response = await bus.InvokeAsync<Response<RoasterDto>>(command, ct);
         return response.IsSuccess ? Ok(response) : NotFound(response);
     }
@@ -57,4 +71,13 @@ public class AdminRoastersController(IMessageBus bus) : ControllerBase
     }
 }
 
-public record UpdateRoasterRequest(string Name);
+public record UpdateRoasterRequest(
+    string Name,
+    string? About = null,
+    Guid? CityId = null,
+    string? Address = null,
+    decimal? Latitude = null,
+    decimal? Longitude = null,
+    string? InstagramLink = null,
+    string? SiteLink = null,
+    List<UploadedPhotoDto>? Photos = null);
