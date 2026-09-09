@@ -2,27 +2,22 @@
 #pragma warning disable
 using CoffeePeek.Account.Application.Common;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 
 namespace Internal.Generated.WolverineHandlers
 {
-    // START: LoginUserCommandHandler1074206267
+    // START: CheckUserExistsByEmailCommandHandler1771468164
     [global::System.CodeDom.Compiler.GeneratedCode("JasperFx", "1.0.0")]
-    public sealed class LoginUserCommandHandler1074206267 : Wolverine.Runtime.Handlers.MessageHandler
+    public sealed class CheckUserExistsByEmailCommandHandler1771468164 : Wolverine.Runtime.Handlers.MessageHandler
     {
         private readonly CoffeePeek.Account.Application.Common.EmailExistenceFilter _emailExistenceFilter;
         private readonly Microsoft.Extensions.DependencyInjection.IServiceScopeFactory _serviceScopeFactory;
-        private readonly Microsoft.Extensions.Options.IOptions<CoffeePeek.Shared.Auth.Options.JWTOptions> _optionsOfJwtOptions1;
-        private readonly Microsoft.Extensions.Options.IOptions<CoffeePeek.Shared.Auth.Options.JWTOptions> _optionsOfJwtOptions2;
         private readonly System.Collections.Generic.IEnumerable<Wolverine.EntityFrameworkCore.IDomainEventScraper> _domainEventScraperIEnumerable;
 
-        public LoginUserCommandHandler1074206267(CoffeePeek.Account.Application.Common.EmailExistenceFilter emailExistenceFilter, Microsoft.Extensions.DependencyInjection.IServiceScopeFactory serviceScopeFactory, Microsoft.Extensions.Options.IOptions<CoffeePeek.Shared.Auth.Options.JWTOptions> __optionsOfJwtOptions1, Microsoft.Extensions.Options.IOptions<CoffeePeek.Shared.Auth.Options.JWTOptions> __optionsOfJwtOptions2, System.Collections.Generic.IEnumerable<Wolverine.EntityFrameworkCore.IDomainEventScraper> domainEventScraperIEnumerable)
+        public CheckUserExistsByEmailCommandHandler1771468164(CoffeePeek.Account.Application.Common.EmailExistenceFilter emailExistenceFilter, Microsoft.Extensions.DependencyInjection.IServiceScopeFactory serviceScopeFactory, System.Collections.Generic.IEnumerable<Wolverine.EntityFrameworkCore.IDomainEventScraper> domainEventScraperIEnumerable)
         {
             _emailExistenceFilter = emailExistenceFilter;
             _serviceScopeFactory = serviceScopeFactory;
-            _optionsOfJwtOptions1 = __optionsOfJwtOptions1;
-            _optionsOfJwtOptions2 = __optionsOfJwtOptions2;
             _domainEventScraperIEnumerable = domainEventScraperIEnumerable;
         }
 
@@ -34,12 +29,9 @@ namespace Internal.Generated.WolverineHandlers
             Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<Wolverine.Runtime.ScopedMessageContextHolder>(serviceScope.ServiceProvider).Context = context;
             // This service has been marked as requiring service location independent of Wolverine's ability to use constructor injection of everything else
             var accountDbContext = Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<CoffeePeek.Account.Persistence.Configuration.AccountDbContext>(serviceScope.ServiceProvider);
-            var passwordHasherService = new CoffeePeek.Account.Infrastructure.Identity.PasswordHasherService();
-            var userRepository = new CoffeePeek.Account.Persistence.Repositories.UserRepository(accountDbContext);
-            var jwtTokenService = new CoffeePeek.Account.Infrastructure.Identity.JWTTokenService(_optionsOfJwtOptions1);
-            var authService = new CoffeePeek.Account.Application.Features.Auth.Login.AuthService(jwtTokenService, userRepository, passwordHasherService, _optionsOfJwtOptions2);
+            var queryUserRepository = new CoffeePeek.Account.Persistence.Repositories.QueryUserRepository(accountDbContext);
             // The actual message body
-            var loginUserCommand = (CoffeePeek.Account.Application.Features.Auth.Login.LoginUserCommand)context.Envelope.Message;
+            var checkUserExistsByEmailCommand = (CoffeePeek.Account.Application.Features.Auth.CheckUserExistsByEmail.CheckUserExistsByEmailCommand)context.Envelope.Message;
 
             
             // Enroll the DbContext & IMessagingContext in the outgoing Wolverine outbox transaction
@@ -53,11 +45,11 @@ namespace Internal.Generated.WolverineHandlers
 
             try
             {
-                System.Diagnostics.Activity.Current?.SetTag("message.handler", "CoffeePeek.Account.Application.Features.Auth.Login.LoginUserHandler");
-                System.Diagnostics.Activity.Current?.SetTag("handler.type", "CoffeePeek.Account.Application.Features.Auth.Login.LoginUserHandler");
+                System.Diagnostics.Activity.Current?.SetTag("message.handler", "CoffeePeek.Account.Application.Features.Auth.CheckUserExistsByEmail.CheckUserExistsByEmailRequestHandler");
+                System.Diagnostics.Activity.Current?.SetTag("handler.type", "CoffeePeek.Account.Application.Features.Auth.CheckUserExistsByEmail.CheckUserExistsByEmailRequestHandler");
                 
                 // The actual message execution
-                var outgoing1 = await CoffeePeek.Account.Application.Features.Auth.Login.LoginUserHandler.Handle(loginUserCommand, authService, _emailExistenceFilter, cancellation).ConfigureAwait(false);
+                var outgoing1 = await CoffeePeek.Account.Application.Features.Auth.CheckUserExistsByEmail.CheckUserExistsByEmailRequestHandler.Handle(checkUserExistsByEmailCommand, queryUserRepository, _emailExistenceFilter, cancellation).ConfigureAwait(false);
 
                 
                 // Outgoing, cascaded message
@@ -81,7 +73,7 @@ namespace Internal.Generated.WolverineHandlers
 
     }
 
-    // END: LoginUserCommandHandler1074206267
+    // END: CheckUserExistsByEmailCommandHandler1771468164
     
     
 }

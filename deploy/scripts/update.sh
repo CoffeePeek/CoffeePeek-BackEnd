@@ -37,6 +37,8 @@ wait_for_backend() {
   done
 
   echo "${service} did not become ready in time"
+  echo "==> Recent ${service} logs..."
+  "${COMPOSE[@]}" logs --no-color --tail 100 "$service" || true
   "${COMPOSE[@]}" ps -a "$service"
   local container_id
   container_id="$("${COMPOSE[@]}" ps -a -q "$service")"
