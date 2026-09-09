@@ -61,6 +61,14 @@ public static class BusinessConstants
 
     #endregion
 
+    #region Roaster
+
+    public const int MaxRoasterAboutLength = 2000;
+    public const int MaxRoasterContactInstagramLinkLength = MaxShopContactInstagramLinkLength;
+    public const int MaxRoasterContactSiteLinkLength = MaxShopContactSiteLinkLength;
+
+    #endregion
+
     #region Visits
 
     public const int MaxVisitNoteLength = 500;
