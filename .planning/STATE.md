@@ -12,6 +12,7 @@
 | 260901-el2 | fix-checkins-createdat-returning-default | complete | 2026-09-01 |
 | 260901-faa | fix-checkin-photos-on-create-persist-pri | complete | 2026-09-01 |
 | 260901-m4f | fix-sentry-cp-shops-service-34-conflicte | complete | 2026-09-01 |
+| 260909 | roaster-contribution | complete | 2026-09-09 |
 
 ## Milestone Progress
 
@@ -22,6 +23,7 @@
 - Shop filters & tags SPEC written at `.planning/specs/SHOP-FILTERS-TAGS.md`.
 - Catalog ingest + admin queue SPEC: `.planning/specs/SHOP-IMPORT-ADMIN.md` (backend vs frontend handoff).
 - Coffee shop menu (catalog drinks + Gemini photo parse): `.planning/specs/SHOP-MENU.md`.
+- Roaster contribution (user submission -> moderation -> publish, public detail endpoint) SPEC + implementation: `.planning/specs/ROASTER-CONTRIBUTION.md`, `.planning/quick/260909-roaster-contribution/`.
 
 ## Accumulated Context
 
