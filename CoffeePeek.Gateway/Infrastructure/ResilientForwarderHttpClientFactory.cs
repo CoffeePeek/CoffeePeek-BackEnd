@@ -31,7 +31,7 @@ internal sealed class ResilientForwarderHttpClientFactory : ForwarderHttpClientF
             .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
             {
                 ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-                    .Handle<HttpRequestException>(IsConnectionRefused),
+                    .Handle<HttpRequestException>(IsTransientConnectFailure),
                 MaxRetryAttempts = 3,
                 Delay = retryDelay,
                 BackoffType = DelayBackoffType.Exponential,
@@ -39,27 +39,32 @@ internal sealed class ResilientForwarderHttpClientFactory : ForwarderHttpClientF
             })
             .Build();
 
-        var passThroughPipeline = new ResiliencePipelineBuilder<HttpResponseMessage>().Build();
-
-        return new ResilienceHandler(request => IsRetryableMethod(request.Method)
-                ? retryPipeline
-                : passThroughPipeline)
+        // Retry-safety here is a property of the failure *phase*, not the HTTP method:
+        // IsTransientConnectFailure only matches socket errors that can occur while the
+        // TCP connection is still being established (see below), so no request bytes can
+        // have reached the server yet. That makes retry safe even for non-idempotent
+        // methods (POST/PUT/PATCH/DELETE), so every request goes through the same pipeline.
+        return new ResilienceHandler(_ => retryPipeline)
         {
             InnerHandler = innerHandler
         };
     }
 
-    private static bool IsRetryableMethod(HttpMethod method) =>
-        method == HttpMethod.Get ||
-        method == HttpMethod.Head ||
-        method == HttpMethod.Options ||
-        method == HttpMethod.Trace;
-
-    private static bool IsConnectionRefused(HttpRequestException exception)
+    /// <summary>
+    /// Matches transport failures that can only occur while the TCP connection is being
+    /// established (before any request bytes are sent): the destination actively refused
+    /// the connection, or a transient local/DNS resource issue prevented the connect
+    /// attempt from completing (EAGAIN / "Resource temporarily unavailable" -- commonly seen
+    /// when a downstream container is mid-restart). Mid-stream failures on an already
+    /// established connection (e.g. SocketError.ConnectionReset) are intentionally NOT
+    /// matched here, since retrying those could re-execute a non-idempotent request that the
+    /// server already received.
+    /// </summary>
+    private static bool IsTransientConnectFailure(HttpRequestException exception)
     {
         for (Exception? current = exception; current is not null; current = current.InnerException)
         {
-            if (current is SocketException { SocketErrorCode: SocketError.ConnectionRefused })
+            if (current is SocketException { SocketErrorCode: SocketError.ConnectionRefused or SocketError.TryAgain })
             {
                 return true;
             }
