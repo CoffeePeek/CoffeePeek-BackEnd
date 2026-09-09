@@ -1,6 +1,7 @@
 using CoffeePeek.Shared.Kernel;
 using CoffeePeek.Shared.Kernel.Options;
 using CoffeePeek.Shops.Application.Abstractions;
+using CoffeePeek.Shops.Application.Services;
 using CoffeePeek.Shops.Infrastructure.Account;
 using CoffeePeek.Shops.Infrastructure.Consumers;
 using CoffeePeek.Shops.Infrastructure.Menu;
@@ -68,6 +69,8 @@ public static class DependencyInjection
         services.AddScoped<IMenuVisionParser, GeminiMenuVisionParser>();
         services.AddScoped<IMenuPhotoDownloader, HttpMenuPhotoDownloader>();
         services.AddScoped<ModerationShopApproveHandler>();
+        services.AddScoped<ICreateRoasterFromModerationService, CreateRoasterFromModerationService>();
+        services.AddScoped<ModerationRoasterApproveHandler>();
 
         return services;
     }

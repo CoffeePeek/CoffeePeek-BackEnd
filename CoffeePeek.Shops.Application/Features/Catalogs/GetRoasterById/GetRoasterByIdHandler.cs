@@ -1,0 +1,63 @@
+using System.Net;
+using CoffeePeek.Contract.Dtos;
+using CoffeePeek.Contract.Dtos.Shop;
+using CoffeePeek.Shared.Kernel;
+using CoffeePeek.Shared.Kernel.Options;
+using CoffeePeek.Shared.Kernel.Response;
+using CoffeePeek.Shops.Domain.Aggregates.CoffeeShopAggregate;
+using Microsoft.Extensions.Options;
+
+namespace CoffeePeek.Shops.Application.Features.Catalogs.GetRoasterById;
+
+public static class GetRoasterByIdHandler
+{
+    public static async Task<Response<RoasterDetailsDto>> Handle(
+        GetRoasterByIdQuery query,
+        IQueryRoasterRepository repository,
+        IOptions<MediaPublicUrlOptions> mediaOptions,
+        CancellationToken ct)
+    {
+        var roaster = await repository.GetByIdWithShopsAndPhotosAsync(query.Id, ct);
+        if (roaster is null)
+            return Response<RoasterDetailsDto>.Error(HttpStatusCode.NotFound, "Roaster not found.");
+
+        return Response<RoasterDetailsDto>.Success(ToDto(roaster, mediaOptions.Value));
+    }
+
+    internal static RoasterDetailsDto ToDto(Roaster roaster, MediaPublicUrlOptions mediaOptions) => new()
+    {
+        Id = roaster.Id,
+        Name = roaster.Name,
+        About = roaster.About,
+        Location = roaster.Location is null
+            ? null
+            : new LocationDto
+            {
+                Address = roaster.Location.Address,
+                Latitude = roaster.Location.Latitude,
+                Longitude = roaster.Location.Longitude
+            },
+        Contact = roaster.Contact is null
+            ? null
+            : new RoasterContactDto
+            {
+                InstagramLink = roaster.Contact.InstagramLink,
+                SiteLink = roaster.Contact.SiteLink
+            },
+        Photos = roaster.Photos
+            .OrderBy(p => p.SortIndex)
+            .Select(p => new ShortPhotoMetadataDto
+            {
+                Id = p.Id,
+                FileName = p.FileName,
+                StorageKey = p.StorageKey,
+                FullUrl = MediaStorageUrlBuilder.BuildPublicUrl(
+                    mediaOptions.PublicEndpoint, mediaOptions.ShopBucketName, p.StorageKey) ?? string.Empty,
+                SortIndex = p.SortIndex
+            })
+            .ToArray(),
+        Shops = roaster.CoffeeShops
+            .Select(s => new RoasterLinkedShopDto { Id = s.Id, Name = s.Name })
+            .ToArray()
+    };
+}

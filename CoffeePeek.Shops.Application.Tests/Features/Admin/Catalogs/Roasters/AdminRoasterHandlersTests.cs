@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using CoffeePeek.Contract.Dtos;
 using CoffeePeek.Contract.Dtos.Shop;
 using CoffeePeek.Shared.Domain.Interfaces.Infrastructure;
 using CoffeePeek.Shared.Kernel;
@@ -54,6 +55,39 @@ public class CreateRoasterHandlerTests
         result.IsSuccess.Should().BeFalse();
         result.StatusCode.Should().Be((int)HttpStatusCode.Conflict);
         _repo.Verify(r => r.Add(It.IsAny<Roaster>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Handle_WithProfileFields_PersistsAboutLocationContactAndPhotos()
+    {
+        _repo.Setup(r => r.GetByNameAsync("Coffee Circus", _ct)).ReturnsAsync((Roaster)null);
+        Roaster captured = null;
+        _repo.Setup(r => r.Add(It.IsAny<Roaster>())).Callback<Roaster>(r => captured = r);
+        _mapper.Setup(m => m.Map<RoasterDto>(It.IsAny<Roaster>()))
+            .Returns((Roaster r) => new RoasterDto { Id = r.Id, Name = r.Name });
+        _cache.Setup(c => c.RemoveByPattern(It.IsAny<string>(), _ct)).ReturnsAsync(1);
+
+        var cityId = Guid.NewGuid();
+        var command = new CreateRoasterCommand(
+            "Coffee Circus",
+            About: "Small-batch roaster.",
+            CityId: cityId,
+            Address: "1 Main St",
+            Latitude: 53.9m,
+            Longitude: 27.5m,
+            InstagramLink: "https://instagram.com/coffeecircus",
+            SiteLink: "https://coffeecircus.by",
+            Photos: [new UploadedPhotoDto("a.jpg", "image/jpeg", "key-a", 100)]);
+
+        var result = await CreateRoasterHandler.Handle(
+            command, _repo.Object, _mapper.Object, _uow.Object, _cache.Object, _ct);
+
+        result.IsSuccess.Should().BeTrue();
+        captured.About.Should().Be("Small-batch roaster.");
+        captured.Location!.Address.Should().Be("1 Main St");
+        captured.Location.IsAddressValidated.Should().BeTrue();
+        captured.Contact!.InstagramLink.Should().Be("https://instagram.com/coffeecircus");
+        captured.Photos.Should().ContainSingle(p => p.StorageKey == "key-a");
     }
 }
 

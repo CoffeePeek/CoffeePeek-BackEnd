@@ -19,6 +19,20 @@ public class QueryRoasterRepository(ShopsDbContext dbContext) : IQueryRoasterRep
             .Where(x => ids.Contains(x.Id))
             .ToListAsync(ct);
     }
+
+    public Task<Roaster?> GetByIdWithShopsAndPhotosAsync(Guid id, CancellationToken ct = default) =>
+        _repository
+            .AsNoTracking()
+            .Include(r => r.CoffeeShops)
+            .Include(r => r.Photos)
+            .FirstOrDefaultAsync(r => r.Id == id, ct);
+
+    public Task<Guid?> GetIdByModerationId(Guid id, CancellationToken ct = default) =>
+        _repository
+            .AsNoTracking()
+            .Where(r => r.ModerationId == id)
+            .Select(r => (Guid?)r.Id)
+            .FirstOrDefaultAsync(ct);
 }
 
 public class RoasterRepository(ShopsDbContext dbContext) : IRoasterRepository
