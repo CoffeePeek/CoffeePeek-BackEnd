@@ -21,6 +21,7 @@ public partial class MapsterConfiguration
 
         ConfigureModerationReview(config);
         ConfigureModerationShop(config, mediaOptions);
+        ConfigureModerationRoaster(config, mediaOptions);
 
         config.NewConfig<PhotoMetadata, ShortPhotoMetadataDto>()
             .Map(d => d.FullUrl, s =>
