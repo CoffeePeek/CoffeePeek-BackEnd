@@ -10,7 +10,7 @@ public class QueryReviewRepository(ShopsDbContext dbContext) : IQueryReviewRepos
     
     public async Task<Review?> GetById(Guid reviewId, CancellationToken ct)
     {
-        return await _repository.AsNoTracking().FirstOrDefaultAsync(x => x.Id == reviewId, ct);
+        return await _repository.AsNoTracking().Include(x => x.Photos).FirstOrDefaultAsync(x => x.Id == reviewId, ct);
     }
     
     public async Task<Guid?> ExistsForCurrentUser(Guid shopId, Guid userId, CancellationToken ct)
@@ -36,6 +36,7 @@ public class QueryReviewRepository(ShopsDbContext dbContext) : IQueryReviewRepos
         var totalCount = await query.CountAsync(ct);
         
         var reviews = await query
+            .Include(r => r.Photos)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(ct);

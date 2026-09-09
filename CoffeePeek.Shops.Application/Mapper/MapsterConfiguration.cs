@@ -6,6 +6,7 @@ using CoffeePeek.Shared.Kernel;
 using CoffeePeek.Shared.Kernel.Options;
 using CoffeePeek.Shops.Domain.Aggregates.BrewMethods;
 using CoffeePeek.Shops.Domain.Aggregates.CoffeeShopAggregate;
+using CoffeePeek.Shops.Domain.Aggregates.ReviewAggregate;
 using CoffeePeek.Shops.Domain.Entities;
 using Mapster;
 using MapsterMapper;
@@ -44,6 +45,14 @@ public static class MapsterConfiguration
                     mediaOptions.PublicEndpoint,
                     mediaOptions.ShopBucketName,
                     src.StorageKey) ?? string.Empty);
+
+        config.NewConfig<ShopPhoto, UploadedPhotoDto>()
+            .Map(dest => dest.Size, src => src.SizeBytes);
+
+        // Mapster's default name matching is case-sensitive, so Review.UserName doesn't
+        // auto-match ReviewDto.Username without this explicit map.
+        config.NewConfig<Review, ReviewDto>()
+            .Map(dest => dest.Username, src => src.UserName);
 
         config.NewConfig<CoffeeShop, ShopDto>()
             .Map(d => d.Photos, s => s.ShopPhotos.OrderBy(p => p.SortIndex).ThenBy(p => p.CreatedAtUtc))
