@@ -1,5 +1,7 @@
 ﻿using CoffeePeek.Moderation.Application.Abstractions;
 using CoffeePeek.Moderation.Infrastructure.Services;
+using CoffeePeek.Moderation.Infrastructure.Shops;
+using CoffeePeek.Shared.Kernel;
 using CoffeePeek.Shared.Kernel.Extentions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
@@ -43,7 +45,14 @@ public static class DependencyInjection
             options.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(300);
             options.CircuitBreaker.MinimumThroughput = 100;
         });
-        
+
+        services.AddHttpClient("shops-roaster-lookup", client =>
+        {
+            client.BaseAddress = new Uri($"http://{AppResources.ShopsService}");
+            client.Timeout = TimeSpan.FromSeconds(5);
+        });
+        services.AddScoped<IRoasterExistenceLookup, ShopsRoasterExistenceLookup>();
+
         return services;
     }
 }
