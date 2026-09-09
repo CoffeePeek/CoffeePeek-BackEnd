@@ -1,5 +1,6 @@
 using CoffeePeek.Moderation.Domain.Aggregates;
 using CoffeePeek.Moderation.Domain.Aggregates.ShopImportCandidateAggregate;
+using CoffeePeek.Moderation.Domain.Aggregates.ShopIssueReportAggregate;
 using CoffeePeek.Moderation.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using ModerationReview = CoffeePeek.Moderation.Domain.Aggregates.ModerationReviewAggregate.ModerationReview;
@@ -19,6 +20,7 @@ public class ModerationDbContext(DbContextOptions<ModerationDbContext> options) 
     public DbSet<ModerationAuditLog> ModerationAuditLogs { get; set; }
     public DbSet<ShopImportCandidate> ShopImportCandidates { get; set; }
     public DbSet<ShopImportDuplicateSuggestion> ShopImportDuplicateSuggestions { get; set; }
+    public DbSet<ShopIssueReport> ShopIssueReports { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

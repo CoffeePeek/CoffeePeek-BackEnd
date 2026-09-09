@@ -11,7 +11,10 @@ public static class BusinessConstants
     public const int MaxReviewCommentLength = 1000;
     public const int MinRejectReasonCommentLength = 2;
     public const int MaxRejectReasonCommentLength = 1000;
-    
+
+    public const int MinShopIssueReportDescriptionLength = 2;
+    public const int MaxShopIssueReportDescriptionLength = 1000;
+
     #region ShopContact
 
     public const int MaxShopContactInstagramLinkLength = 255;

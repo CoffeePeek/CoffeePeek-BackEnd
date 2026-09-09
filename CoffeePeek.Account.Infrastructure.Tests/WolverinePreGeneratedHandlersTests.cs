@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Runtime.ExceptionServices;
 using CoffeePeek.AccountService;
 using JasperFx.CodeGeneration;
 using Microsoft.AspNetCore.Builder;
@@ -6,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Wolverine;
 using Wolverine.Runtime;
+using Wolverine.Runtime.Handlers;
 
 namespace CoffeePeek.Account.Infrastructure.Tests;
 
@@ -50,6 +53,32 @@ public class WolverinePreGeneratedHandlersTests
         var options = app.Services.GetRequiredService<WolverineOptions>();
         Assert.Equal(TypeLoadMode.Static, options.CodeGeneration.TypeLoadMode);
         var runtime = (WolverineRuntime)app.Services.GetRequiredService<IWolverineRuntime>();
-        runtime.Handlers.AssertPreBuiltTypesExist(options);
+        AssertPreBuiltTypesExist(runtime.Handlers, options);
+    }
+
+    // WolverineFx 6.x made HandlerGraph.AssertPreBuiltTypesExist internal (it was public in 5.x).
+    // Calling host.StartAsync() to reach the same check via WolverineRuntime's normal bootstrap
+    // path isn't an option here: that path also runs message-store migration against the real
+    // Postgres connection string, which this offline test doesn't have. Reflection is the only
+    // way left to exercise the one check this test actually cares about.
+    private static void AssertPreBuiltTypesExist(HandlerGraph handlers, WolverineOptions options)
+    {
+        var method = typeof(HandlerGraph).GetMethod(
+            "AssertPreBuiltTypesExist",
+            BindingFlags.NonPublic | BindingFlags.Instance,
+            [typeof(WolverineOptions)]);
+
+        if (method is null)
+            throw new MissingMethodException(
+                "HandlerGraph.AssertPreBuiltTypesExist(WolverineOptions) not found — WolverineFx API may have changed again.");
+
+        try
+        {
+            method.Invoke(handlers, [options]);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+        }
     }
 }
