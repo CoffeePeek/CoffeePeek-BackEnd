@@ -1,10 +1,10 @@
-using CoffeePeek.AccountService;
+using CoffeePeek.MediaService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Wolverine.Runtime.Handlers;
 
-namespace CoffeePeek.Account.Infrastructure.Tests;
+namespace CoffeePeek.MediaService.Tests;
 
 // Regression test for a production crash-loop: TypeLoadMode.Static (non-Development) requires
 // pre-generated Wolverine handler code compiled into the assembly (Internal/Generated/WolverineHandlers/),
@@ -15,7 +15,7 @@ namespace CoffeePeek.Account.Infrastructure.Tests;
 public class WolverinePreGeneratedHandlersTests
 {
     [Fact]
-    public async Task ProductionAccountHost_StartsPastWolverineHandlerCheck()
+    public async Task ProductionMediaHost_StartsPastWolverineHandlerCheck()
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
         {
@@ -30,22 +30,15 @@ public class WolverinePreGeneratedHandlersTests
             ["RabbitMqOptions:Port"] = "1",
             ["RabbitMqOptions:Username"] = "guest",
             ["RabbitMqOptions:Password"] = "guest",
-            ["RedisOptions:Host"] = "127.0.0.1",
-            ["RedisOptions:Port"] = "1",
-            ["RedisOptions:Password"] = "test",
-            ["JWTOptions:SecretKey"] = "codegen-test-secret-at-least-32-characters",
-            ["JWTOptions:Issuer"] = "CoffeePeek.WEB",
-            ["JWTOptions:Audience"] = "CoffeePeek.API",
-            ["JWTOptions:AccessTokenLifetimeMinutes"] = "60",
-            ["JWTOptions:RefreshTokenLifetimeDays"] = "7",
             ["GatewayAuth:SecretKey"] = "codegen-test-gateway-secret-at-least-32-characters",
-            ["MinIOOptions:Endpoint"] = "http://localhost:9000",
-            ["MinIOOptions:AccessKey"] = "test",
-            ["MinIOOptions:SecretKey"] = "test",
             ["MediaPublicUrlOptions:PublicEndpoint"] = "http://localhost:9000",
             ["MediaPublicUrlOptions:ShopBucketName"] = "coffeepeek.shops",
             ["MediaPublicUrlOptions:AvatarBucketName"] = "coffeepeek.avatars",
-            ["ResendClientOptions:ApiToken"] = "re_test_placeholder"
+            ["MinIOOptions:Endpoint"] = "http://localhost:9000",
+            ["MinIOOptions:AccessKey"] = "test",
+            ["MinIOOptions:SecretKey"] = "test",
+            ["MinIOOptions:ShopBucketName"] = "coffee.shops",
+            ["MinIOOptions:UserBucketName"] = "coffee.avatars"
         });
         builder.AddApplication();
 
@@ -61,7 +54,7 @@ public class WolverinePreGeneratedHandlersTests
         {
             Assert.Fail(
                 "Internal/Generated/WolverineHandlers/ is out of sync with the current handlers. " +
-                $"Run 'dotnet run -- codegen write' in CoffeePeek.AccountService and commit the output. {ex.Message}");
+                $"Run 'dotnet run -- codegen write' in CoffeePeek.MediaService and commit the output. {ex.Message}");
         }
         catch
         {
