@@ -23,4 +23,11 @@ public static class BusinessConstants
     public const int MaxShopContactPhoneNumberLength = 20;
 
     #endregion
+
+    #region Roaster
+
+    public const int MaxRoasterNameLength = 100;
+    public const int MaxRoasterAboutLength = 2000;
+
+    #endregion
 }

@@ -21,6 +21,8 @@ public class ModerationDbContext(DbContextOptions<ModerationDbContext> options) 
     public DbSet<ShopImportCandidate> ShopImportCandidates { get; set; }
     public DbSet<ShopImportDuplicateSuggestion> ShopImportDuplicateSuggestions { get; set; }
     public DbSet<ShopIssueReport> ShopIssueReports { get; set; }
+    public DbSet<ModerationRoaster> ModerationRoasters { get; set; }
+    public DbSet<ModerationRoasterPhoto> ModerationRoasterPhotos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -67,6 +69,17 @@ public class ModerationDbContext(DbContextOptions<ModerationDbContext> options) 
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.ShopId);
             entity.HasIndex(e => e.BrewMethodId);
+        });
+
+        modelBuilder.Entity<ModerationRoasterPhoto>(entity =>
+        {
+            entity.UsePropertyAccessMode(PropertyAccessMode.Field);
+            entity.HasKey(e => e.Id);
+            entity.HasOne<ModerationRoaster>()
+                .WithMany(r => r.Photos)
+                .HasForeignKey(e => e.ModerationRoasterId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

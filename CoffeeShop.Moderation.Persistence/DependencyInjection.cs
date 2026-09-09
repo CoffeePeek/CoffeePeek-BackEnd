@@ -48,6 +48,8 @@ public static class DependencyInjection
         services.AddScoped<IShopImportCandidateRepository, ShopImportCandidateRepository>();
         services.AddScoped<IShopImportDuplicateSuggestionRepository, ShopImportDuplicateSuggestionRepository>();
         services.AddScoped<IShopIssueReportRepository, ShopIssueReportRepository>();
+        services.AddScoped<IQueryModerationRoasterRepository, QueryModerationRoasterRepository>();
+        services.AddScoped<IModerationRoasterRepository, ModerationRoasterRepository>();
 
         return services;
     }
