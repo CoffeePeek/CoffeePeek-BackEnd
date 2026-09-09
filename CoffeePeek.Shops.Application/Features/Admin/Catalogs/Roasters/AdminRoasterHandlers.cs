@@ -56,7 +56,7 @@ public static class UpdateRoasterHandler
         if (roaster is null)
             return Response<RoasterDto>.Error(HttpStatusCode.NotFound, "Roaster not found.");
 
-        roaster.Update(command.Name);
+        roaster.Update(command.Name, roaster.About);
         await unitOfWork.SaveChangesAsync(ct);
         await CreateRoasterHandler.InvalidateRoasterCachesAsync(cacheService, ct);
 

@@ -26,6 +26,8 @@ public class ShopsDbContext(DbContextOptions<ShopsDbContext> options) : DbContex
     public virtual DbSet<CoffeeShop> Shops { get; set; }
     
     public virtual DbSet<ShopPhoto> ShopPhotos { get; set; }
+
+    public virtual DbSet<RoasterPhoto> RoasterPhotos { get; set; }
     
     public virtual DbSet<City> Cities { get; set; }
 
@@ -47,6 +49,8 @@ public class ShopsDbContext(DbContextOptions<ShopsDbContext> options) : DbContex
         modelBuilder.HasPostgresExtension("pg_trgm");
         modelBuilder.ApplyConfiguration(new CoffeeShopConfiguration());
         modelBuilder.ApplyConfiguration(new ShopPhotoConfiguration());
+        modelBuilder.ApplyConfiguration(new RoasterConfiguration());
+        modelBuilder.ApplyConfiguration(new RoasterPhotoConfiguration());
         modelBuilder.ApplyConfiguration(new ShopTagConfiguration());
         modelBuilder.ApplyConfiguration(new CoffeeShopTagConfiguration());
         modelBuilder.ApplyConfiguration(new CoffeeDrinkDefinitionConfiguration());
