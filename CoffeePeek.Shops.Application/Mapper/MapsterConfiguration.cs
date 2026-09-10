@@ -49,6 +49,15 @@ public static class MapsterConfiguration
         config.NewConfig<ShopPhoto, UploadedPhotoDto>()
             .Map(dest => dest.Size, src => src.SizeBytes);
 
+        // Roaster carries its cover photo (lowest SortIndex) so shop-detail can show it inline
+        // without a follow-up GET /api/roasters/{id}. Roaster photos live in the shop bucket.
+        config.NewConfig<Roaster, RoasterDto>()
+            .Map(dest => dest.PhotoUrl, src =>
+                MediaStorageUrlBuilder.BuildPublicUrl(
+                    mediaOptions.PublicEndpoint,
+                    mediaOptions.ShopBucketName,
+                    src.Photos.OrderBy(p => p.SortIndex).Select(p => p.StorageKey).FirstOrDefault()));
+
         // Mapster's default name matching is case-sensitive, so Review.UserName doesn't
         // auto-match ReviewDto.Username without this explicit map.
         config.NewConfig<Review, ReviewDto>()

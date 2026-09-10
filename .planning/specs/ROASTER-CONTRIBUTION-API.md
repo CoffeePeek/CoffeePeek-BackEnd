@@ -2,7 +2,7 @@
 
 **Status:** implemented (backend)
 **Audience:** client app team + admin panel team (separate clients — this repo is backend-only)
-**Backend location:** `CoffeePeek.Shops.*` / `CoffeePeek.ShopsService` (public detail + admin CRUD) and `CoffeePeek.Moderation.*` / `CoffeePeek.ModerationService` (submission + review), routed through the Gateway
+**Backend location:** `CoffeePeek.Shops.*` / `CoffeePeek.ShopsService` (public detail + admin CRUD), `CoffeePeek.Moderation.*` / `CoffeePeek.ModerationService` (submission + review), and `CoffeePeek.MediaService` (photo upload — section 2.1), routed through the Gateway
 **Base URL:** `http://localhost:5000` (Aspire dev) / `https://api.coffeepeek.by` (production) — all paths below are relative to this
 **Related:** `.planning/specs/ROASTER-CONTRIBUTION.md` (requirements), `.planning/quick/260909-roaster-contribution/` (implementation)
 
@@ -58,6 +58,45 @@ HTTP status codes used: `200`/`201` (success), `400` (validation/domain error), 
 
 ---
 
+## 2.1 Uploading photos (Media service — prerequisite for sections 3 and 6)
+
+Every `photos` field in this API references files **already uploaded** to the Media service — you never send raw bytes to the roaster endpoints. Flow: request presigned upload URLs → `PUT` each file's bytes to its URL → pass the returned metadata into the roaster submit/create/update body.
+
+```
+POST /api/Photos/roaster
+Authorization: Bearer <jwt>          (any authenticated user)
+Content-Type: application/json
+```
+
+**Request body** — an array (upload several at once):
+
+```json
+[
+  { "sizeBytes": 204800, "fileName": "roastery.jpg", "contentType": "image/jpeg" }
+]
+```
+
+**Success response (`200`):**
+
+```json
+{
+  "isSuccess": true,
+  "message": "Operation successful",
+  "data": [
+    {
+      "photoId": "c2d3e4f5-...",
+      "uploadUrl": "https://media.coffeepeek.by/coffeepeek.shops/roasters/abc123.jpg?X-Amz-...",
+      "storageKey": "roasters/abc123.jpg"
+    }
+  ],
+  "statusCode": null
+}
+```
+
+`PUT` each file's raw bytes to its `uploadUrl` (presigned, expires in ~10 minutes). Then build the roaster `photos` array from `fileName` + `contentType` + `storageKey` + the byte size — see sections 3 and 6. Roaster photos are stored in the **shop bucket** under a `roasters/` key prefix, so their public URLs resolve to `{mediaEndpoint}/coffeepeek.shops/roasters/…`.
+
+---
+
 ## 3. Client API — submit a roaster
 
 ```
@@ -87,7 +126,7 @@ Content-Type: application/json
 - `name` — required, max 100 characters.
 - `about`, `instagramLink`, `siteLink` — all optional.
 - `address` and `cityId` — optional, but **must be sent together**. If only one is present the roaster is created without a location (no address shown on the profile). If both are present, the backend geocodes the address server-side (Yandex) — see `isAddressValidated` in the response.
-- `photos` — optional array. Each entry must reference a file **already uploaded** via the Media service (`POST /api/Photos`) — pass back the `fileName`/`contentType`/`storageKey`/`size` that upload returned. This endpoint does not accept raw file bytes.
+- `photos` — optional array. Each entry must reference a file **already uploaded** via the Media service (`POST /api/Photos/roaster`, see section 2.1) — pass back the `fileName`/`contentType`/`storageKey`/`size` that upload returned. This endpoint does not accept raw file bytes.
 - Do **not** send a `userId` field — it's derived server-side from the auth token and ignored if sent.
 
 **Success response (`201`):**
@@ -338,5 +377,6 @@ DELETE /api/admin/roasters/{id}
 
 - **No resubmission flow.** If a roaster submission is rejected, the user must submit a brand-new one via section 3 — there's no "edit and resubmit the same record."
 - **No roaster search/browse endpoint.** Only detail-by-id (section 4) and the existing `{id, name}` picker (`GET /api/catalogs/roasters`) exist. A browsable/filterable roaster directory is not built.
-- **Photos always go through the Media service first.** Every `photos` field across sections 3 and 6 expects already-uploaded file metadata (`fileName`, `contentType`, `storageKey`, `size`), never raw bytes.
+- **Photos always go through the Media service first.** Every `photos` field across sections 3 and 6 expects already-uploaded file metadata (`fileName`, `contentType`, `storageKey`, `size`), never raw bytes — upload via `POST /api/Photos/roaster` (section 2.1). Roaster photos are stored in the shop bucket under a `roasters/` prefix.
+- **Coffee-shop detail responses surface carried roasters.** The coffee-shop detail endpoint returns each roaster a shop carries as `{ id, name, photoUrl }` — `photoUrl` is the roaster's cover photo (lowest `SortIndex`), or `null` if it has none. Use the `id` to deep-link to section 4 for the full profile. This is the forward direction; section 4's `shops` array is the reverse lookup.
 - **Admin CRUD (section 6) response DTOs are intentionally thin (`{id, name}`).** If the admin panel needs the full saved profile back in the same round-trip (instead of a follow-up `GET`), ask backend — this was a deliberate scope cut, not an oversight, but it's a small additive change if needed.
