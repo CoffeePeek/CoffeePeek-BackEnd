@@ -1,4 +1,7 @@
+using System.Reflection;
 using CoffeePeek.ShopsService;
+using CoffeePeek.Shops.Application.Features.CoffeeShop.GetCoffeeShop;
+using CoffeePeek.Shops.Infrastructure.Consumers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -60,5 +63,59 @@ public class WolverinePreGeneratedHandlersTests
             // Any other failure (e.g. unreachable Postgres/RabbitMQ) means Wolverine's pre-built
             // type check already passed — that's all this test verifies.
         }
+    }
+
+    // Complements the start-up test above, which only catches DANGLING pre-generated references
+    // (MissingPreBuiltTypesException). It does NOT catch a NEWLY-ADDED handler that was never
+    // codegen'd — that handler is simply absent from the manifest, so in TypeLoadMode.Static the
+    // host has no local executor for its message and Wolverine falls back to remote request/reply,
+    // which times out (5s) at runtime instead of failing at startup. (Regression: GetRoasterByIdQuery
+    // shipped without pre-generated code and 500'd in production.) This test closes that gap: every
+    // handler Wolverine discovers must have a matching pre-generated class compiled into the assembly.
+    [Fact]
+    public void EveryDiscoveredHandler_HasPreGeneratedCode()
+    {
+        // Same assemblies the host scans for handlers (see InfrastructureExtensions.AddApplication).
+        Assembly[] handlerAssemblies =
+        [
+            typeof(GetCoffeeShopHandler).Assembly,          // CoffeePeek.Shops.Application
+            typeof(ModerationShopApproveHandler).Assembly,  // CoffeePeek.Shops.Infrastructure
+        ];
+
+        var handlerMethodNames = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "Handle", "HandleAsync", "Handles", "Consume", "Consumes", "ConsumeAsync"
+        };
+
+        // Message type per discovered handler method (Wolverine convention: first parameter is the
+        // message). Restricted to CoffeePeek message types to skip helper methods on *Handler classes.
+        var discoveredMessageNames = handlerAssemblies
+            .SelectMany(a => a.GetTypes())
+            .Where(t => t is { IsClass: true, IsAbstract: false }
+                        && (t.Name.EndsWith("Handler", StringComparison.Ordinal)
+                            || t.Name.EndsWith("Consumer", StringComparison.Ordinal)))
+            .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+            .Where(m => handlerMethodNames.Contains(m.Name))
+            .Select(m => m.GetParameters().FirstOrDefault()?.ParameterType)
+            .Where(pt => pt?.Namespace?.StartsWith("CoffeePeek", StringComparison.Ordinal) == true)
+            .Select(pt => pt!.Name)
+            .ToHashSet(StringComparer.Ordinal);
+
+        // Wolverine names each pre-generated class "{MessageTypeName}Handler{hash}" in this namespace.
+        var generatedNames = typeof(InfrastructureExtensions).Assembly
+            .GetTypes()
+            .Where(t => t.Namespace == "Internal.Generated.WolverineHandlers")
+            .Select(t => t.Name)
+            .ToArray();
+
+        var missing = discoveredMessageNames
+            .Where(msg => !generatedNames.Any(g => g.StartsWith(msg + "Handler", StringComparison.Ordinal)))
+            .OrderBy(x => x, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.True(missing.Length == 0,
+            "Internal/Generated/WolverineHandlers/ is out of sync — missing pre-generated code for: "
+            + string.Join(", ", missing)
+            + ". Run 'dotnet run -- codegen write' in CoffeePeek.ShopsService and commit the output.");
     }
 }
