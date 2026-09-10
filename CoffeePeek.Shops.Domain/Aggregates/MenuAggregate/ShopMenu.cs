@@ -101,6 +101,11 @@ public sealed class ShopMenu : Entity<Guid>
         else
             existing.ApplyManual(availability, price, volumeMl);
 
+        MarkManualUpdate(updatedByUserId);
+    }
+
+    public void MarkManualUpdate(Guid? updatedByUserId)
+    {
         UpdatedByUserId = updatedByUserId;
         if (ParseStatus == MenuParseStatus.None)
             ParseStatus = MenuParseStatus.Ready;

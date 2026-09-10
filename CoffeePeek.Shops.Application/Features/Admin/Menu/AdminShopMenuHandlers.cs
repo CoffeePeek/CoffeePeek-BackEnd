@@ -164,19 +164,15 @@ public static class UpdateAdminShopMenuHandler
 
         var catalog = await drinks.GetActiveAsync(ct);
         var bySlug = catalog.ToDictionary(d => d.Slug, StringComparer.OrdinalIgnoreCase);
-        var menu = await applyMenu.GetOrCreateAsync(command.ShopId, ct);
-
-        foreach (var item in command.Items)
-        {
-            if (!bySlug.TryGetValue(item.Slug, out var drink))
-                continue;
-            menu.ApplyManualItem(
-                drink.Id,
+        var updates = command.Items
+            .Where(item => bySlug.ContainsKey(item.Slug))
+            .Select(item => new ManualShopMenuItemUpdate(
+                bySlug[item.Slug].Id,
                 (DomainAvailability)(int)item.Availability,
                 item.Price,
-                item.VolumeMl,
-                command.UserId);
-        }
+                item.VolumeMl))
+            .ToArray();
+        var menu = await applyMenu.ApplyManualItemsAsync(command.ShopId, updates, command.UserId, ct);
 
         if (command.ApplySuggestedPriceRange && menu.SuggestedPriceRange.HasValue)
             shop.SetPriceRange((DomainPriceRange)(int)menu.SuggestedPriceRange.Value);

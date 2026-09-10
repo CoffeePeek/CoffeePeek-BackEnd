@@ -13,6 +13,12 @@ namespace CoffeePeek.Shops.Application.Services;
 
 public interface IApplyShopMenuService
 {
+    Task<ShopMenu> ApplyManualItemsAsync(
+        Guid shopId,
+        IReadOnlyList<ManualShopMenuItemUpdate> items,
+        Guid? userId,
+        CancellationToken ct);
+
     Task ApplySnapshotAsync(
         Guid shopId,
         ShopMenuSnapshot snapshot,
@@ -42,6 +48,12 @@ public class ApplyShopMenuService(
     ICacheService cacheService) : IApplyShopMenuService
 {
     private static readonly JsonSerializerOptions JsonOpts = new(JsonSerializerDefaults.Web);
+
+    public Task<ShopMenu> ApplyManualItemsAsync(
+        Guid shopId,
+        IReadOnlyList<ManualShopMenuItemUpdate> items,
+        Guid? userId,
+        CancellationToken ct) => menuRepository.ApplyManualItemsAsync(shopId, items, userId, ct);
 
     public async Task ApplySnapshotAsync(
         Guid shopId,
